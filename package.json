@@ -1,0 +1,51 @@
+{
+  "name": "qiot-io-cli",
+  "version": "0.0.0",
+  "description": "command line interface tool for qiot.io",
+  "main": "qiot-io-cli.js",
+  "scripts": {
+    "test": "nyc mocha --recursive"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git://github.com/%3AQuantumIOT/qiot-io-cli.git"
+  },
+  "keywords": [
+    "qiot",
+    "cli"
+  ],
+  "author": "Steve Emmons <s.p.emmons@gmail.com> (https://github.com/spemmons)",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/%3AQuantumIOT/qiot-io-cli/issues"
+  },
+  "homepage": "https://github.com/%3AQuantumIOT/qiot-io-cli#readme",
+  "nyc": {
+    "all": true,
+    "exclude": [
+      "qiot-io-cli.js",
+      "coverage",
+      "scripts",
+      "test"
+    ],
+    "reporter": [
+      "text",
+      "html"
+    ]
+  },
+  "dependencies": {
+    "commander": "^2.9.0",
+    "http-status-codes": "^1.0.6",
+    "lodash": "^4.17.4",
+    "prompt": "^1.0.0",
+    "regex-email": "^1.0.2"
+  },
+  "devDependencies": {
+    "chai": "^3.5.0",
+    "mocha": "^3.2.0",
+    "mockery": "^2.0.0",
+    "nyc": "^10.0.0",
+    "sinon": "^1.17.7",
+    "timekeeper": "^1.0.0"
+  }
+}
