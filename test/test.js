@@ -2,14 +2,16 @@ var _ = require('lodash');
 
 var helpers = require(process.cwd() + '/lib/helpers');
 
-module.exports.chai = require('chai');
-module.exports.should = module.exports.chai.should();
-module.exports.expect = module.exports.chai.expect;
-module.exports.sinon = require('sinon');
-module.exports.mockery = require('mockery');
-module.exports.timekeeper = require('timekeeper');
+var test = {};
 
-module.exports.safeAssertions = function(done,callback) {
+test.chai = require('chai');
+test.should = test.chai.should();
+test.expect = test.chai.expect;
+test.sinon = require('sinon');
+test.mockery = require('mockery');
+test.timekeeper = require('timekeeper');
+
+test.safeAssertions = function(done,callback) {
   try {
     callback();
   } catch (e) {
@@ -17,8 +19,35 @@ module.exports.safeAssertions = function(done,callback) {
   }
 };
 
-module.exports.deferAssertions = function(done,callback){
-  _.defer(module.exports.safeAssertions,done,callback);
+test.deferAssertions = function(done,callback){
+  _.defer(test.safeAssertions,done,callback);
+};
+
+test.standardBeforeEach = function(allowed){
+  test.mockery.enable();
+  test.mockery.warnOnReplace(false);
+  test.mockery.registerAllowables(_.concat(allowed || [],['lodash','./config',test.configGuard.requirePath]));
+  test.mockery.registerMock('./logger', test.mockLogger);
+  test.mockLogger.resetMock();
+  test.mockery.registerMock('./helpers',test.mockHelpers);
+  test.mockHelpers.resetMock();
+
+  var config = test.configGuard.beginGuarding();
+  test.mockHelpers.resetMock();
+
+  test.mockLogger.debugging = true;
+
+  return config;
+};
+
+test.standardAfterEach = function(){
+  test.mockLogger.debugging = false;
+
+  test.configGuard.finishGuarding();
+  test.mockHelpers.checkMockFiles();
+  test.mockLogger.checkMockLogEntries();
+  test.mockery.deregisterAll();
+  test.mockery.disable();
 };
 
 // CONFIG GUARD
@@ -37,7 +66,7 @@ ConfigGuard.finishGuarding = function(){
   ConfigGuard.config.settings.should.eql(JSON.parse(ConfigGuard.previous));
 };
 
-module.exports.configGuard = ConfigGuard;
+test.configGuard = ConfigGuard;
 
 // MOCK HELPERS
 
@@ -80,7 +109,7 @@ MockHelpers.saveJSON = function(filename, json){
 
 MockHelpers.resetMock();
 
-module.exports.mockHelpers = MockHelpers;
+test.mockHelpers = MockHelpers;
 
 // MOCK LOGGER
 
@@ -111,7 +140,7 @@ MockLogger.debug = function(debug){
 
 MockLogger.resetMock();
 
-module.exports.mockLogger = MockLogger;
+test.mockLogger = MockLogger;
 
 // MOCK HTTP(S)
 
@@ -133,7 +162,6 @@ MockHTTP.prototype.on = function(event,callback){
   self.eventCallbacks[event] = callback;
   if (event == 'end')
     _.defer(function(){
-      self.eventCallbacks.request(self);
       if (self.dataToRead) self.eventCallbacks.data(self.dataToRead);
       self.eventCallbacks.end(null);
     });
@@ -167,4 +195,6 @@ MockHTTP.prototype.request = function(options,callback){
   return self;
 };
 
-module.exports.MockHTTP = MockHTTP;
+test.MockHTTP = MockHTTP;
+
+module.exports = test;

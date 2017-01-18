@@ -8,29 +8,10 @@ describe('Command: whoami',function() {
   var config = null;
 
   beforeEach(function () {
-
-    test.mockery.enable();
-    test.mockery.warnOnReplace(false);
-    test.mockery.registerAllowables(['lodash','commander','prompt','./config',test.configGuard.requirePath]);
-    test.mockery.registerMock('./logger', test.mockLogger);
-    test.mockLogger.resetMock();
-    test.mockery.registerMock('./helpers',test.mockHelpers);
-    test.mockHelpers.resetMock();
-
-    config = test.configGuard.beginGuarding();
-    test.mockHelpers.resetMock();
-
-    test.mockLogger.debugging = true;
+    config = test.standardBeforeEach(['prompt','commander']);
   });
 
-  afterEach(function () {
-    test.mockLogger.debugging = false;
-    test.configGuard.finishGuarding();
-    test.mockHelpers.checkMockFiles();
-    test.mockLogger.checkMockLogEntries();
-    test.mockery.deregisterAll();
-    test.mockery.disable();
-  });
+  afterEach(test.standardAfterEach);
 
   describe('when no auth_token exists',function(){
     it('should report there is no current user',function(done){

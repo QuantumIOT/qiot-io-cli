@@ -13,20 +13,10 @@ describe('Command: signin',function() {
   var mockHTTP = null;
 
   beforeEach(function () {
-    test.mockery.enable();
-    test.mockery.warnOnReplace(false);
-    test.mockery.registerAllowables(['lodash','prompt','./config',test.configGuard.requirePath]);
-    test.mockery.registerMock('./logger', test.mockLogger);
-    test.mockLogger.resetMock();
-    test.mockery.registerMock('./helpers',test.mockHelpers);
-    test.mockHelpers.resetMock();
+    config = test.standardBeforeEach(['prompt']);
+
     test.mockery.registerMock('commander',commander = {});
     test.mockery.registerMock('https',mockHTTP = new test.MockHTTP());
-
-    config = test.configGuard.beginGuarding();
-    test.mockHelpers.resetMock();
-
-    // test.mockLogger.debugging = true;
 
     promptStub = test.sinon.stub(prompt,'get');
   });
@@ -34,12 +24,7 @@ describe('Command: signin',function() {
   afterEach(function () {
     promptStub.restore();
 
-    test.mockLogger.debugging = false;
-    test.configGuard.finishGuarding();
-    test.mockHelpers.checkMockFiles();
-    test.mockLogger.checkMockLogEntries();
-    test.mockery.deregisterAll();
-    test.mockery.disable();
+    test.standardAfterEach();
   });
 
   function standardSetupMockHTTP(){
@@ -57,7 +42,12 @@ describe('Command: signin',function() {
     test.mockHelpers.checkMockFiles(
       [[config.config_file,'default'],[config.config_file,'success']],
       [[config.config_file,{auth_token: 'TOKEN'}]]);
-    test.mockLogger.checkMockLogEntries();
+    test.mockLogger.checkMockLogEntries([
+      'DEBUG - host POST: {"email":"test@test.com","password":"testing!!"}',
+      'DEBUG - host output: {"status":"success","token":"TOKEN"}',
+      'DEBUG - host status: OK',
+      'DEBUG - update config: {"auth_token":"TOKEN"}'
+    ]);
 
     delete config.settings.auth_token;
   }
@@ -92,6 +82,11 @@ describe('Command: signin',function() {
           promptStub.getCalls().length.should.eql(0);
 
           [result].should.eql(['unsuccessful signin: Forbidden']);
+
+          test.mockLogger.checkMockLogEntries([
+            'DEBUG - host POST: {"email":"test@test.com","password":"testing!!"}',
+            'DEBUG - host status: Forbidden'
+          ]);
 
           done();
         });

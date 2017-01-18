@@ -9,19 +9,7 @@ describe('Command: init',function() {
   var promptStub = null;
 
   beforeEach(function () {
-
-    test.mockery.enable();
-    test.mockery.warnOnReplace(false);
-    test.mockery.registerAllowables(['lodash','commander','prompt','./config',test.configGuard.requirePath]);
-    test.mockery.registerMock('./logger', test.mockLogger);
-    test.mockLogger.resetMock();
-    test.mockery.registerMock('./helpers',test.mockHelpers);
-    test.mockHelpers.resetMock();
-
-    config = test.configGuard.beginGuarding();
-    test.mockHelpers.resetMock();
-
-    test.mockLogger.debugging = true;
+    config = test.standardBeforeEach(['prompt','commander']);
 
     promptStub = test.sinon.stub(prompt,'get');
   });
@@ -29,12 +17,7 @@ describe('Command: init',function() {
   afterEach(function () {
     promptStub.restore();
 
-    test.mockLogger.debugging = false;
-    test.configGuard.finishGuarding();
-    test.mockHelpers.checkMockFiles();
-    test.mockLogger.checkMockLogEntries();
-    test.mockery.deregisterAll();
-    test.mockery.disable();
+    test.standardAfterEach();
   });
 
   it('should prompt the user for standard config items',function(){
