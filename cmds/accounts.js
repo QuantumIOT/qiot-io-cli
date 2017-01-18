@@ -8,7 +8,7 @@ module.exports = function(options,callback){
   var cmd = new CMD();
   var host = new HOST(true);
 
-  if (!callback) callback = function(error) { if (error) cmd.logger.error(error); };
+  callback = cmd.ensureGoodCallback(callback);
 
   host.get('/users/accounts').then(function(result){
 

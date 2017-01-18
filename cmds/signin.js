@@ -12,11 +12,11 @@ module.exports = function(options,callback){
 
   var cmd = new CMD();
 
+  callback = cmd.ensureGoodCallback(callback);
+
   cmd.prompt.start();
 
   if (regexEmail.test(cmd.options.user)) cmd.options.email = cmd.options.user;
-
-  if (!callback) callback = function(error) { if (error) cmd.logger.error(error); };
 
   cmd.ensureOptions(specs).then(function(){
     var host = new HOST();

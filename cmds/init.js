@@ -4,6 +4,8 @@ module.exports = function(options,callback){
 
   var cmd = new CMD();
 
+  callback = cmd.ensureGoodCallback(callback);
+
   cmd.prompt.start();
 
   var args = [
@@ -11,11 +13,11 @@ module.exports = function(options,callback){
     {name: 'host_dns',description: 'host DNS',  default: cmd.config.settings.host_dns}
   ];
   cmd.prompt.get(args,function(error,result){
-    if (error) return cmd.logger.error(error);
+    if (error) return callback(error);
 
     cmd.config.update(result);
 
-    callback && callback();
+    callback(null);
   });
 
 };
