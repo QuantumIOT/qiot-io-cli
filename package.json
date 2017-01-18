@@ -35,10 +35,13 @@
   },
   "dependencies": {
     "commander": "^2.9.0",
+    "flat": "^2.0.1",
     "http-status-codes": "^1.0.6",
+    "jwt-decode": "^2.1.0",
     "lodash": "^4.17.4",
     "prompt": "^1.0.0",
-    "regex-email": "^1.0.2"
+    "regex-email": "^1.0.2",
+    "table": "^4.0.1"
   },
   "devDependencies": {
     "chai": "^3.5.0",

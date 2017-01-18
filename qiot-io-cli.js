@@ -21,4 +21,14 @@ commander
   .alias('si')
   .action(require('./cmds/signin'));
 
+commander
+  .command('whoami')
+  .alias('?')
+  .action(require('./cmds/whoami'));
+
+commander
+  .command('accounts')
+  .alias('a')
+  .action(require('./cmds/accounts'));
+
 commander.parse(process.argv);
