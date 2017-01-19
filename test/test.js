@@ -27,8 +27,7 @@ test.standardBeforeEach = function(allowed){
   test.mockery.enable();
   test.mockery.warnOnReplace(false);
   test.mockery.registerAllowables(_.concat(allowed || [],['lodash','./config',test.configGuard.requirePath]));
-  test.mockery.registerMock('./logger', test.mockLogger);
-  test.mockLogger.resetMock();
+  test.loggerBeforeEach();
   test.mockery.registerMock('./helpers',test.mockHelpers);
   test.mockHelpers.resetMock();
 
@@ -44,10 +43,24 @@ test.standardAfterEach = function(){
   test.mockLogger.debugging = false;
 
   test.configGuard.finishGuarding();
+
   test.mockHelpers.checkMockFiles();
-  test.mockLogger.checkMockLogEntries();
+  test.loggerAfterEach();
   test.mockery.deregisterAll();
   test.mockery.disable();
+};
+
+test.loggerBeforeEach = function(){
+  test.mockery.registerMock('./logger', test.mockLogger);
+  test.mockLogger.resetMock();
+};
+
+test.loggerAfterEach = function(){
+  test.loggerCheckEntries();
+};
+
+test.loggerCheckEntries = function(expected){
+  test.mockLogger.checkMockLogEntries(expected);
 };
 
 // CONFIG GUARD

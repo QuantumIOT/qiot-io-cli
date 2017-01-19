@@ -7,36 +7,33 @@ describe('config',function(){
 
   beforeEach(function () {
     test.mockery.enable();
-    test.mockery.registerAllowables(['lodash',test.configGuard.requirePath]);
+    test.mockery.registerAllowables(['lodash','./logger',test.configGuard.requirePath]);
     test.mockery.warnOnReplace(false);
+    test.loggerBeforeEach();
     test.mockery.registerMock('./helpers', test.mockHelpers);
-    test.mockery.registerMock('./logger',test.mockLogger);
-
-    test.mockLogger.resetMock();
     test.mockHelpers.resetMock();
 
     config = test.configGuard.beginGuarding();
     config.resetLoggerAndHelpers();
     config.reset();
 
-    test.mockLogger.resetMock();
     test.mockHelpers.resetMock();
   });
 
   afterEach(function () {
     test.configGuard.finishGuarding();
     test.mockHelpers.checkMockFiles();
-    test.mockLogger.checkMockLogEntries();
+    test.loggerAfterEach();
     test.mockery.disable();
   });
 
   describe('reset',function(){
     it('should turn off debugging by default and reload the file',function(){
-      test.mockLogger.debugging = true;
-      test.mockLogger.debugging.should.be.ok;
+      config.logger.debugging = true;
+      config.logger.debugging.should.be.ok;
 
       config.reset();
-      test.mockLogger.debugging.should.not.be.ok;
+      config.logger.debugging.should.not.be.ok;
       test.mockHelpers.checkMockFiles([[config.config_file,'default']]);
     });
   });
@@ -74,12 +71,12 @@ describe('config',function(){
     it('should save any changed values in the config file',function(){
       test.mockHelpers.filesToRead[config.config_file] = {test: false};
 
-      test.mockLogger.debugging = true;
+      config.logger.debugging = true;
 
       config.update({test: true});
 
       test.mockHelpers.checkMockFiles([[config.config_file,'success'],[config.config_file,'success']],[[config.config_file,{test: true}]]);
-      test.mockLogger.checkMockLogEntries(['DEBUG - update config: {"test":true}']);
+      test.loggerCheckEntries(['DEBUG - update config: {"test":true}']);
 
       delete config.settings.test;
     });

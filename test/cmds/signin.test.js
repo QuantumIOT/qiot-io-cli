@@ -42,7 +42,7 @@ describe('Command: signin',function() {
     test.mockHelpers.checkMockFiles(
       [[config.config_file,'default'],[config.config_file,'success']],
       [[config.config_file,{auth_token: 'TOKEN'}]]);
-    test.mockLogger.checkMockLogEntries([
+    test.loggerCheckEntries([
       'DEBUG - host POST /users/signin : {"email":"test@test.com","password":"testing!!"}',
       'DEBUG - host output: {"status":"success","token":"TOKEN"}',
       'DEBUG - host status: OK',
@@ -83,7 +83,7 @@ describe('Command: signin',function() {
 
           [result].should.eql(['unsuccessful signin: Forbidden']);
 
-          test.mockLogger.checkMockLogEntries([
+          test.loggerCheckEntries([
             'DEBUG - host POST /users/signin : {"email":"test@test.com","password":"testing!!"}',
             'DEBUG - host status: Forbidden'
           ]);
@@ -102,7 +102,7 @@ describe('Command: signin',function() {
 
       test.deferAssertions(done,function(){
         promptStub.getCalls().length.should.eql(1);
-        test.mockLogger.checkMockLogEntries(['ERROR - test error']);
+        test.loggerCheckEntries(['ERROR - test error']);
         done();
       })
 

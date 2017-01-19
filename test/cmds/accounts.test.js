@@ -24,7 +24,7 @@ describe('Command: accounts',function() {
 
         [result].should.eql(['Forbidden']);
 
-        test.mockLogger.checkMockLogEntries([
+        test.loggerCheckEntries([
           'DEBUG - host GET /users/accounts : null',
           'DEBUG - host status: Forbidden'
         ]);
@@ -42,7 +42,7 @@ describe('Command: accounts',function() {
 
         [result].should.eql([null]);
 
-        test.mockLogger.checkMockLogEntries([
+        test.loggerCheckEntries([
           'DEBUG - host GET /users/accounts : null',
           'DEBUG - host output: {"status":"success","accounts":[{"id":1,"name":"test","token_identifier":"ID","token_secret":"SECRET","account_token":"TOKEN","users":[{"id":123,"email":"test@test.com"}]}]}',
           'DEBUG - host status: OK',

@@ -45,7 +45,7 @@ describe('Command: init',function() {
     promptStub.callArgWith(1,'test error');
 
     test.mockHelpers.checkMockFiles([]);
-    test.mockLogger.checkMockLogEntries(['ERROR - test error']);
+    test.loggerCheckEntries(['ERROR - test error']);
   });
 
   it('should not change the config when all defaults are accepted',function(){
@@ -57,7 +57,7 @@ describe('Command: init',function() {
     config.settings.host_dns.should.eql('qiot.io');
 
     test.mockHelpers.checkMockFiles([[config.config_file,'default']]);
-    test.mockLogger.checkMockLogEntries([]);
+    test.loggerCheckEntries([]);
   });
 
   it('should change the config when all values are given',function(done){
@@ -72,7 +72,7 @@ describe('Command: init',function() {
     config.settings.host_dns = config.defaults.host_dns;
 
     test.mockHelpers.checkMockFiles([[config.config_file,'default'],[config.config_file,'success']],[[config.config_file,{debug: true,host_dns: 'TEST'}]]);
-    test.mockLogger.checkMockLogEntries(['DEBUG - update config: {"debug":true,"host_dns":"TEST"}']);
+    test.loggerCheckEntries(['DEBUG - update config: {"debug":true,"host_dns":"TEST"}']);
   });
 
 });

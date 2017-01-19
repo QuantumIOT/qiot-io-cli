@@ -10,15 +10,14 @@ describe('helpers',function(){
     test.mockery.enable();
     test.mockery.registerAllowables(['lodash','./config','./logger',helperPath]);
     test.mockery.warnOnReplace(false);
-    test.mockery.registerMock('./logger',test.mockLogger);
-    test.mockLogger.resetMock();
+    test.loggerBeforeEach();
 
     helpers = require(helperPath);
     helpers.resetLogger();
   });
 
   afterEach(function () {
-    test.mockLogger.checkMockLogEntries();
+    test.loggerAfterEach();
     test.mockery.disable();
   });
 
@@ -33,7 +32,7 @@ describe('helpers',function(){
 
     it('should return the error value if the file is invalid',function(){
       helpers.readJSON(process.cwd() + '/test/data/invalid.json',{result: 'default'},{result: 'error'}).should.eql({result: 'error'});
-      test.mockLogger.checkMockLogEntries(['ERROR - SyntaxError: Unexpected end of input']);
+      test.loggerCheckEntries(['ERROR - SyntaxError: Unexpected end of input']);
     });
   });
 
@@ -49,7 +48,7 @@ describe('helpers',function(){
 
     it('should log an error if saving fails',function(){
       helpers.saveJSON(null,{success: true});
-      test.mockLogger.checkMockLogEntries(['ERROR - save JSON error - TypeError: path must be a string']);
+      test.loggerCheckEntries(['ERROR - save JSON error - TypeError: path must be a string']);
     })
   });
 
@@ -60,7 +59,7 @@ describe('helpers',function(){
 
     it('should return null for invalid json',function(){
       (helpers.safeParseJSON('{') === null).should.be.ok;
-      test.mockLogger.checkMockLogEntries(['ERROR - json error: SyntaxError: Unexpected end of input']);
+      test.loggerCheckEntries(['ERROR - json error: SyntaxError: Unexpected end of input']);
     });
   });
 

@@ -16,7 +16,7 @@ describe('Command: whoami',function() {
   describe('when no auth_token exists',function(){
     it('should report there is no current user',function(done){
       whoami({},function(){
-        test.mockLogger.checkMockLogEntries(['ERROR - no current user']);
+        test.loggerCheckEntries(['ERROR - no current user']);
         done();
       });
     })
@@ -34,7 +34,7 @@ describe('Command: whoami',function() {
     it('should report there is no current user',function(){
       whoami();
 
-      test.mockLogger.checkMockLogEntries([
+      test.loggerCheckEntries([
         'id:\t8',
         'name:\tsuperadmin',
         'email:\tsuperadmin@quantumiot.com',
