@@ -1,4 +1,5 @@
 var _ = require('lodash');
+var commander = require('commander');
 
 var test = require('../test');
 
@@ -36,6 +37,8 @@ describe('Command: accounts',function() {
 
   it('should print accounts to console on success',function(done){
     mockHTTP.dataToRead = JSON.stringify({status: 'success',accounts: [{id: 1,name: 'test',token_identifier: 'ID',token_secret: 'SECRET',account_token: 'TOKEN',users: [{id: 123,email: 'test@test.com'}]}]});
+
+    commander.raw = true;
 
     accounts({},function(result){
       test.safeAssertions(done,function(){

@@ -1,4 +1,5 @@
 var prompt = require('prompt');
+var commander = require('commander');
 
 var test = require('../test');
 
@@ -8,54 +9,68 @@ describe('Command: whoami',function() {
   var config = null;
 
   beforeEach(function () {
+    commander.raw = true;
+
     config = test.standardBeforeEach(['prompt','commander']);
   });
 
   afterEach(test.standardAfterEach);
 
   describe('when no user_token exists',function(){
-    it('should report there is no current user',function(done){
+    it('should report there is no user_token',function(done){
       whoami({},function(){
-        test.loggerCheckEntries(['ERROR - no current user']);
+        test.loggerCheckEntries([
+          'ERROR - no user token',
+          [
+            ' current_user                   \n',
+            ' current_account                \n',
+            ' current_collection             \n',
+            ' current_thing                  \n'
+          ].join('')
+        ]);
         done();
       });
     })
   });
 
-  describe('when no user_token exists',function(){
+  describe('when a user_token exists',function(){
     beforeEach(function(){
-      config.settings.user_token = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6OCwibmFtZSI6InN1cGVyYWRtaW4iLCJlbWFpbCI6InN1cGVyYWRtaW5AcXVhbnR1bWlvdC5jb20iLCJyZW1vdGVfaWQiOm51bGwsIm9hdXRoX3Byb3ZpZGVyIjpudWxsLCJvYXV0aF90b2tlbl90eXBlIjpudWxsLCJvYXV0aF9hY2Nlc3NfdG9rZW4iOm51bGwsIm9hdXRoX3Njb3BlIjpudWxsLCJjcmVhdGVkX2F0IjoiMjAxNy0wMS0wN1QxODo0MDo0NC4zNjRaIiwidXBkYXRlZF9hdCI6IjIwMTctMDEtMDdUMTg6NDA6NDQuMzY0WiIsImFjY291bnRfaWQiOm51bGwsInJvbGVfaWQiOjIsInBhc3N3b3JkX2hhc2giOiIkMmEkMTAkQ1dHTUJsV0R3TC5yNldhczRXSUpwT3Zjb2dLSlEzRmpCVGxzNlNWT3lwWlBoMkhadDBsb1MiLCJwYXNzd29yZF9zYWx0IjoiJDJhJDEwJENXR01CbFdEd0wucjZXYXM0V0lKcE8iLCJhdXRoX3R5cGUiOiJwYXNzd29yZCIsInRlYW1faWQiOm51bGwsInJvbGUiOnsiaWQiOjIsIm5hbWUiOiJzdXBlci1hZG1pbiJ9LCJpYXQiOjE0ODQ3NjMxNDksImV4cCI6MTQ4NTM2Nzk0OX0.dclfHnVn7aDoxMEf4ccQhWBIJpH2lKFhLLTOTumInWM';
+      config.settings.user_token = test.TEST_USER_TOKEN;
     });
 
     afterEach(function(){
       delete config.settings.user_token;
     });
 
-    it('should report there is no current user',function(){
+    it('should list the current user information',function(){
       whoami();
 
-      test.loggerCheckEntries([
-        'id:\t8',
-        'name:\tsuperadmin',
-        'email:\tsuperadmin@quantumiot.com',
-        'remote_id:\tnull',
-        'oauth_provider:\tnull',
-        'oauth_token_type:\tnull',
-        'oauth_access_token:\tnull',
-        'oauth_scope:\tnull',
-        'created_at:\t2017-01-07T18:40:44.364Z',
-        'updated_at:\t2017-01-07T18:40:44.364Z',
-        'account_id:\tnull',
-        'role_id:\t2',
-        'password_hash:\t$2a$10$CWGMBlWDwL.r6Was4WIJpOvcogKJQ3FjBTls6SVOypZPh2HZt0loS',
-        'password_salt:\t$2a$10$CWGMBlWDwL.r6Was4WIJpO',
-        'auth_type:\tpassword',
-        'team_id:\tnull',
-        'role.id:\t2',
-        'role.name:\tsuper-admin',
-        'iat:\t1484763149',
-        'exp:\t1485367949'
-      ]);
+      test.loggerCheckEntries([[
+        ' id                   8                                                            \n',
+        ' name                 superadmin                                                   \n',
+        ' email                superadmin@quantumiot.com                                    \n',
+        ' remote_id                                                                         \n',
+        ' oauth_provider                                                                    \n',
+        ' oauth_token_type                                                                  \n',
+        ' oauth_access_token                                                                \n',
+        ' oauth_scope                                                                       \n',
+        ' created_at           2017-01-07T18:40:44.364Z                                     \n',
+        ' updated_at           2017-01-07T18:40:44.364Z                                     \n',
+        ' account_id                                                                        \n',
+        ' role_id              2                                                            \n',
+        ' password_hash        $2a$10$CWGMBlWDwL.r6Was4WIJpOvcogKJQ3FjBTls6SVOypZPh2HZt0loS \n',
+        ' password_salt        $2a$10$CWGMBlWDwL.r6Was4WIJpO                                \n',
+        ' auth_type            password                                                     \n',
+        ' team_id                                                                           \n',
+        ' role.id              2                                                            \n',
+        ' role.name            super-admin                                                  \n',
+        ' iat                  1484763149                                                   \n',
+        ' exp                  1485367949                                                   \n',
+        ' current_user                                                                      \n',
+        ' current_account                                                                   \n',
+        ' current_collection                                                                \n',
+        ' current_thing                                                                     \n'
+      ].join('')]);
     })
   });
 

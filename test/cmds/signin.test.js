@@ -15,7 +15,7 @@ describe('Command: signin',function() {
   beforeEach(function () {
     config = test.standardBeforeEach(['prompt']);
 
-    test.mockery.registerMock('commander',commander = {});
+    test.mockery.registerMock('commander',commander = {raw: true});
     test.mockery.registerMock('https',mockHTTP = new test.MockHTTP());
 
     promptStub = test.sinon.stub(prompt,'get');
@@ -28,10 +28,41 @@ describe('Command: signin',function() {
   });
 
   function standardSetupMockHTTP(){
-    mockHTTP.dataToRead = JSON.stringify({status: 'success',token: 'TOKEN'});
+    mockHTTP.dataToRead = JSON.stringify({status: 'success',token: test.TEST_USER_TOKEN});
   }
 
   function standardAssertMockHTTP(){
+    test.loggerCheckEntries([
+      'DEBUG - host POST /users/signin : {"email":"test@test.com","password":"testing!!"}',
+      'DEBUG - host output: {"status":"success","token":"' + test.TEST_USER_TOKEN + '"}',
+      'DEBUG - host status: OK',
+      'DEBUG - update config: {"user_token":"' + test.TEST_USER_TOKEN + '","current_user":8,"current_account":null}',
+      [
+        ' id                   8                                                            \n',
+        ' name                 superadmin                                                   \n',
+        ' email                superadmin@quantumiot.com                                    \n',
+        ' remote_id                                                                         \n',
+        ' oauth_provider                                                                    \n',
+        ' oauth_token_type                                                                  \n',
+        ' oauth_access_token                                                                \n',
+        ' oauth_scope                                                                       \n',
+        ' created_at           2017-01-07T18:40:44.364Z                                     \n',
+        ' updated_at           2017-01-07T18:40:44.364Z                                     \n',
+        ' account_id                                                                        \n',
+        ' role_id              2                                                            \n',
+        ' password_hash        $2a$10$CWGMBlWDwL.r6Was4WIJpOvcogKJQ3FjBTls6SVOypZPh2HZt0loS \n',
+        ' password_salt        $2a$10$CWGMBlWDwL.r6Was4WIJpO                                \n',
+        ' auth_type            password                                                     \n',
+        ' team_id                                                                           \n',
+        ' role.id              2                                                            \n',
+        ' role.name            super-admin                                                  \n',
+        ' iat                  1484763149                                                   \n',
+        ' exp                  1485367949                                                   \n',
+        ' current_user         8                                                            \n',
+        ' current_account                                                                   \n'
+      ].join('')
+    ]);
+
     _.keys(mockHTTP.eventCallbacks).should.eql(['request','error','data','end']);
     mockHTTP.dataWritten.should.eql([
       'request={"method":"POST","host":"qiot.io","port":443,"path":"/users/signin","headers":{"Content-Type":"application/json","Content-Length":48}}',
@@ -41,27 +72,20 @@ describe('Command: signin',function() {
 
     test.mockHelpers.checkMockFiles(
       [[config.config_file,'default'],[config.config_file,'success']],
-      [[config.config_file,{user_token: 'TOKEN'}]]);
-    test.loggerCheckEntries([
-      'DEBUG - host POST /users/signin : {"email":"test@test.com","password":"testing!!"}',
-      'DEBUG - host output: {"status":"success","token":"TOKEN"}',
-      'DEBUG - host status: OK',
-      'DEBUG - update config: {"user_token":"TOKEN"}'
-    ]);
+      [[config.config_file,{user_token: test.TEST_USER_TOKEN,current_user: 8,current_account: null}]]
+    );
 
     delete config.settings.user_token;
+    delete config.settings.current_user;
+    delete config.settings.current_account;
   }
 
-  describe('when all commander options are given',function(){
-    beforeEach(function(){
-      commander.user = 'test@test.com';
-      commander.password = 'testing!!';
-    });
-
+  describe('when all command line arguments are given',function(){
     it('does not prompt the user',function(done){
       standardSetupMockHTTP();
 
-      signin(commander,null);
+      signin('test@test.com','testing!!');
+
       setTimeout(function(){
         test.safeAssertions(done,function(){
           promptStub.getCalls().length.should.eql(0);
@@ -76,7 +100,7 @@ describe('Command: signin',function() {
     it('accepts an HTTP error',function(done){
       mockHTTP.statusCode = 403;
 
-      signin(commander,function(result){
+      signin('test@test.com','testing!!',function(result){
         test.safeAssertions(done,function(){
 
           promptStub.getCalls().length.should.eql(0);
@@ -98,7 +122,7 @@ describe('Command: signin',function() {
     it('captures prompt errors',function(done){
       promptStub.onFirstCall().callsArgWith(1,'test error');
 
-      signin(commander);
+      signin(null,null);
 
       test.deferAssertions(done,function(){
         promptStub.getCalls().length.should.eql(1);
@@ -114,10 +138,10 @@ describe('Command: signin',function() {
       promptStub.onFirstCall().callsArgWith(1,null,{email: 'test@test.com'});
       promptStub.onSecondCall().callsArgWith(1,null,{password: 'testing!!'});
 
-      signin(commander,function(error){
+      signin(null,null,function(error){
         test.safeAssertions(done,function(){
           [error].should.eql([null]);
-          commander.should.eql({email: 'test@test.com',password: 'testing!!'});
+          commander.should.eql({email: 'test@test.com',password: 'testing!!',raw: true});
 
           promptStub.getCalls().length.should.eql(2);
           promptStub.getCall(0).args[0].should.eql([{name: 'email',   required: true,pattern: regexEmail}]);

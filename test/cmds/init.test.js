@@ -35,6 +35,11 @@ describe('Command: init',function() {
         default: 'qiot.io',
         description: 'host DNS',
         name: 'host_dns'
+      },
+      {
+        default: undefined,
+        description: 'account token',
+        name: 'account_token'
       }
     ]);
   });
