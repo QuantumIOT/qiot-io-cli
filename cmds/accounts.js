@@ -14,7 +14,7 @@ module.exports = function(options,callback){
 
     if (result.statusCode !== host.allCodes.OK || !result.data.accounts) return callback(host.allCodes.getStatusText(result.statusCode));
 
-    cmd.dumpTable(['id','name','token_identifier','token_secret','account_token'],result.data.accounts);
+    cmd.dumpTable(['id','name','token_identifier','token_secret','account_token','users.0.id','users.0.email'],result.data.accounts);
 
     callback(null);
 

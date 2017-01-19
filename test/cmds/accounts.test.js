@@ -25,7 +25,7 @@ describe('Command: accounts',function() {
         [result].should.eql(['Forbidden']);
 
         test.mockLogger.checkMockLogEntries([
-          'DEBUG - host GET: null',
+          'DEBUG - host GET /users/accounts : null',
           'DEBUG - host status: Forbidden'
         ]);
 
@@ -35,7 +35,7 @@ describe('Command: accounts',function() {
   });
 
   it('should print accounts to console on success',function(done){
-    mockHTTP.dataToRead = JSON.stringify({status: 'success',accounts: [{id: 1,name: 'test',token_identifier: 'ID',token_secret: 'SECRET',account_token: 'TOKEN'}]});
+    mockHTTP.dataToRead = JSON.stringify({status: 'success',accounts: [{id: 1,name: 'test',token_identifier: 'ID',token_secret: 'SECRET',account_token: 'TOKEN',users: [{id: 123,email: 'test@test.com'}]}]});
 
     accounts({},function(result){
       test.safeAssertions(done,function(){
@@ -43,12 +43,12 @@ describe('Command: accounts',function() {
         [result].should.eql([null]);
 
         test.mockLogger.checkMockLogEntries([
-          'DEBUG - host GET: null',
-          'DEBUG - host output: {\"status\":\"success\",\"accounts\":[{\"id\":1,\"name\":\"test\",\"token_identifier\":\"ID\",\"token_secret\":\"SECRET\",\"account_token\":\"TOKEN\"}]}',
+          'DEBUG - host GET /users/accounts : null',
+          'DEBUG - host output: {"status":"success","accounts":[{"id":1,"name":"test","token_identifier":"ID","token_secret":"SECRET","account_token":"TOKEN","users":[{"id":123,"email":"test@test.com"}]}]}',
           'DEBUG - host status: OK',
-          [ ' id   name   token_identifier   token_secret   account_token \n',
-            '──── ────── ────────────────── ────────────── ───────────────\n',
-            ' 1    test   ID                 SECRET         TOKEN         \n'
+          [ ' id   name   token_identifier   token_secret   account_token   users.0.id   users.0.email \n',
+            '──── ────── ────────────────── ────────────── ─────────────── ──────────── ───────────────\n',
+            ' 1    test   ID                 SECRET         TOKEN           123          test@test.com \n'
           ].join('')
         ]);
 

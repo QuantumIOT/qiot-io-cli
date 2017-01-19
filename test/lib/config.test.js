@@ -48,10 +48,14 @@ describe('config',function(){
       test.mockHelpers.checkMockFiles([[config.config_file,'default']]);
     });
 
-    it('should save any non-default values in the config file',function(){
+    it('should save any non-default values in the config file and also be able to delete them',function(){
       config.update({test: true});
 
       test.mockHelpers.checkMockFiles([[config.config_file,'default'],[config.config_file,'success']],[[config.config_file,{test: true}]]);
+
+      config.update({test: undefined});
+
+      test.mockHelpers.checkMockFiles([[config.config_file,'success'],[config.config_file,'success']],[[config.config_file,{}]]);
 
       delete config.settings.test;
     });

@@ -43,7 +43,7 @@ describe('Command: signin',function() {
       [[config.config_file,'default'],[config.config_file,'success']],
       [[config.config_file,{auth_token: 'TOKEN'}]]);
     test.mockLogger.checkMockLogEntries([
-      'DEBUG - host POST: {"email":"test@test.com","password":"testing!!"}',
+      'DEBUG - host POST /users/signin : {"email":"test@test.com","password":"testing!!"}',
       'DEBUG - host output: {"status":"success","token":"TOKEN"}',
       'DEBUG - host status: OK',
       'DEBUG - update config: {"auth_token":"TOKEN"}'
@@ -84,7 +84,7 @@ describe('Command: signin',function() {
           [result].should.eql(['unsuccessful signin: Forbidden']);
 
           test.mockLogger.checkMockLogEntries([
-            'DEBUG - host POST: {"email":"test@test.com","password":"testing!!"}',
+            'DEBUG - host POST /users/signin : {"email":"test@test.com","password":"testing!!"}',
             'DEBUG - host status: Forbidden'
           ]);
 
