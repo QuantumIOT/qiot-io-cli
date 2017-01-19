@@ -37,6 +37,11 @@ describe('Command: init',function() {
         name: 'host_dns'
       },
       {
+        default: 'api.qiot.io',
+        description: 'thing proxy DNS',
+        name: 'proxy_dns'
+      },
+      {
         default: undefined,
         description: 'account token',
         name: 'account_token'

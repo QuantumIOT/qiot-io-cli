@@ -1,14 +1,13 @@
-var _ = require('lodash');
-
-var CMD = require('../lib/cmd');
-var HOST = require('../lib/host');
+var proxyutils = require('../lib/proxy-utils');
 
 module.exports = function(thing_token){
+  return proxyutils.request(arguments,{path: '/1/l/' + thing_token},null,function(cmd,result,callback){
+    cmd.safeguard(callback,function() {
+      if (result.statusCode !== proxyutils.HOST.allCodes.OK) return callback(proxyutils.HOST.allCodes.getStatusText(result.statusCode));
 
-  var cmd = new CMD();
-  var host = new HOST(true);
+      cmd.dumpObject(result.data);
 
-  var callback = cmd.ensureGoodCallback(arguments);
-
-  console.log(thing_token);
+      callback(null);
+    });
+  });
 };

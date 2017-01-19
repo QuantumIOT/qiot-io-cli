@@ -33,7 +33,7 @@ describe('Command: signin',function() {
 
   function standardAssertMockHTTP(){
     test.loggerCheckEntries([
-      'DEBUG - host POST /users/signin : {"email":"test@test.com","password":"testing!!"}',
+      'DEBUG - host (qiot.io) POST /users/signin : {"email":"test@test.com","password":"testing!!"}',
       'DEBUG - host output: {"status":"success","token":"' + test.TEST_USER_TOKEN + '"}',
       'DEBUG - host status: OK',
       'DEBUG - update config: {"user_token":"' + test.TEST_USER_TOKEN + '","current_user":8,"current_account":null}',
@@ -108,7 +108,7 @@ describe('Command: signin',function() {
           [result].should.eql(['unsuccessful signin: Forbidden']);
 
           test.loggerCheckEntries([
-            'DEBUG - host POST /users/signin : {"email":"test@test.com","password":"testing!!"}',
+            'DEBUG - host (qiot.io) POST /users/signin : {"email":"test@test.com","password":"testing!!"}',
             'DEBUG - host status: Forbidden'
           ]);
 

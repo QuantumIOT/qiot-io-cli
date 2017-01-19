@@ -12,7 +12,7 @@ module.exports = function(method,uri,body){
 
   host.request({method: method, path: uri},cmd.helpers.safeParseJSON(body || null)).then(function(result){
     cmd.safeguard(callback,function() {
-      if (result.statusCode !== host.allCodes.OK) return callback(host.allCodes.getStatusText(result.statusCode));
+      if (result.statusCode !== HOST.allCodes.OK) return callback(HOST.allCodes.getStatusText(result.statusCode));
 
       cmd.dumpObject(result.data);
 

@@ -21,7 +21,7 @@ module.exports = function(){
 function thingsForCollection(cmd,host,callback){
   host.get('/users/collections/' + cmd.options[cmd.COLLECTION_OPTION] + '/collection+things').then(function(result){
     cmd.safeguard(callback,function() {
-      if (result.statusCode !== host.allCodes.OK || !result.data.collection) return callback(host.allCodes.getStatusText(result.statusCode));
+      if (result.statusCode !== HOST.allCodes.OK || !result.data.collection) return callback(HOST.allCodes.getStatusText(result.statusCode));
 
       cmd.dumpTable(['id', 'label', 'thing_token', 'collection_token', 'account_token', 'collection_id', 'last_reported_at', 'identities.0.type', 'identities.0.value'], result.data.collection.things);
 
@@ -33,7 +33,7 @@ function thingsForCollection(cmd,host,callback){
 function thingsForAccount(cmd,host,callback){
   host.get('/users/accounts/' + cmd.options[cmd.ACCOUNT_OPTION] + '/things').then(function(result){
     cmd.safeguard(callback,function() {
-      if (result.statusCode !== host.allCodes.OK || !result.data.things) return callback(host.allCodes.getStatusText(result.statusCode));
+      if (result.statusCode !== HOST.allCodes.OK || !result.data.things) return callback(HOST.allCodes.getStatusText(result.statusCode));
 
       cmd.dumpTable(['id', 'label', 'thing_token', 'collection_token', 'account_token', 'collection_id', 'last_reported_at', 'identities.0.type', 'identities.0.value'], result.data.things);
 

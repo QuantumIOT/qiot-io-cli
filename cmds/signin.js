@@ -24,9 +24,9 @@ module.exports = function(email,password){
   cmd.ensureOptions(specs).then(function(){
     var host = new HOST();
 
-    host.post('/users/signin',null,{email: cmd.options.email,password: cmd.options.password}).then(function(result){
+    host.post('/users/signin',{email: cmd.options.email,password: cmd.options.password}).then(function(result){
       cmd.safeguard(callback,function() {
-        if (result.statusCode !== host.allCodes.OK || !result.data.token) return callback('unsuccessful signin: ' + host.allCodes.getStatusText(result.statusCode));
+        if (result.statusCode !== HOST.allCodes.OK || !result.data.token) return callback('unsuccessful signin: ' + HOST.allCodes.getStatusText(result.statusCode));
 
         cmd.establishUser(result.data.token);
 

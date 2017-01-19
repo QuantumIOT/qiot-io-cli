@@ -12,7 +12,7 @@ module.exports = function(){
 
   host.get('/users/accounts').then(function(result){
     cmd.safeguard(callback,function() {
-      if (result.statusCode !== host.allCodes.OK || !result.data.accounts) return callback(host.allCodes.getStatusText(result.statusCode));
+      if (result.statusCode !== HOST.allCodes.OK || !result.data.accounts) return callback(HOST.allCodes.getStatusText(result.statusCode));
 
       cmd.dumpTable(['id', 'name', 'token_identifier', 'token_secret', 'account_token', 'users.0.id', 'users.0.email'], result.data.accounts);
 

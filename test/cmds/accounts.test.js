@@ -26,7 +26,7 @@ describe('Command: accounts',function() {
         [result].should.eql(['Forbidden']);
 
         test.loggerCheckEntries([
-          'DEBUG - host GET /users/accounts : null',
+          'DEBUG - host (qiot.io) GET /users/accounts : null',
           'DEBUG - host status: Forbidden'
         ]);
 
@@ -46,7 +46,7 @@ describe('Command: accounts',function() {
         [result].should.eql([null]);
 
         test.loggerCheckEntries([
-          'DEBUG - host GET /users/accounts : null',
+          'DEBUG - host (qiot.io) GET /users/accounts : null',
           'DEBUG - host output: {"status":"success","accounts":[{"id":1,"name":"test","token_identifier":"ID","token_secret":"SECRET","account_token":"TOKEN","users":[{"id":123,"email":"test@test.com"}]}]}',
           'DEBUG - host status: OK',
           [ ' id   name   token_identifier   token_secret   account_token   users.0.id   users.0.email \n',

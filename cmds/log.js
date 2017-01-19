@@ -1,14 +1,3 @@
-var _ = require('lodash');
+var proxyutils = require('../lib/proxy-utils');
 
-var CMD = require('../lib/cmd');
-var HOST = require('../lib/host');
-
-module.exports = function(thing_token,message){
-
-  var cmd = new CMD();
-  var host = new HOST(true);
-
-  var callback = cmd.ensureGoodCallback(arguments);
-
-  console.log(thing_token,message);
-};
+module.exports = function(thing_token,message){ return proxyutils.post(arguments,'/1/l/' + thing_token,message); };
