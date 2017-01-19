@@ -15,7 +15,7 @@ module.exports = function(options,callback){
 
     if (result.statusCode !== host.allCodes.OK || !result.data.collections) return callback(host.allCodes.getStatusText(result.statusCode));
 
-    cmd.dumpTable(['id','name','collection_token'],result.data.collections);
+    cmd.dumpTable(['id','name','auth_token'],result.data.collections); // TODO - auth_token => collection_token
 
     cmd.checkSaveClear(cmd.ACCOUNT_OPTION);
 

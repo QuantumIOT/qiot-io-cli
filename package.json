@@ -34,6 +34,7 @@
     ]
   },
   "dependencies": {
+    "ansi-styles": "^3.0.0",
     "commander": "^2.9.0",
     "flat": "^2.0.1",
     "http-status-codes": "^1.0.6",

@@ -13,7 +13,7 @@ describe('Command: whoami',function() {
 
   afterEach(test.standardAfterEach);
 
-  describe('when no auth_token exists',function(){
+  describe('when no user_token exists',function(){
     it('should report there is no current user',function(done){
       whoami({},function(){
         test.loggerCheckEntries(['ERROR - no current user']);
@@ -22,13 +22,13 @@ describe('Command: whoami',function() {
     })
   });
 
-  describe('when no auth_token exists',function(){
+  describe('when no user_token exists',function(){
     beforeEach(function(){
-      config.settings.auth_token = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6OCwibmFtZSI6InN1cGVyYWRtaW4iLCJlbWFpbCI6InN1cGVyYWRtaW5AcXVhbnR1bWlvdC5jb20iLCJyZW1vdGVfaWQiOm51bGwsIm9hdXRoX3Byb3ZpZGVyIjpudWxsLCJvYXV0aF90b2tlbl90eXBlIjpudWxsLCJvYXV0aF9hY2Nlc3NfdG9rZW4iOm51bGwsIm9hdXRoX3Njb3BlIjpudWxsLCJjcmVhdGVkX2F0IjoiMjAxNy0wMS0wN1QxODo0MDo0NC4zNjRaIiwidXBkYXRlZF9hdCI6IjIwMTctMDEtMDdUMTg6NDA6NDQuMzY0WiIsImFjY291bnRfaWQiOm51bGwsInJvbGVfaWQiOjIsInBhc3N3b3JkX2hhc2giOiIkMmEkMTAkQ1dHTUJsV0R3TC5yNldhczRXSUpwT3Zjb2dLSlEzRmpCVGxzNlNWT3lwWlBoMkhadDBsb1MiLCJwYXNzd29yZF9zYWx0IjoiJDJhJDEwJENXR01CbFdEd0wucjZXYXM0V0lKcE8iLCJhdXRoX3R5cGUiOiJwYXNzd29yZCIsInRlYW1faWQiOm51bGwsInJvbGUiOnsiaWQiOjIsIm5hbWUiOiJzdXBlci1hZG1pbiJ9LCJpYXQiOjE0ODQ3NjMxNDksImV4cCI6MTQ4NTM2Nzk0OX0.dclfHnVn7aDoxMEf4ccQhWBIJpH2lKFhLLTOTumInWM';
+      config.settings.user_token = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6OCwibmFtZSI6InN1cGVyYWRtaW4iLCJlbWFpbCI6InN1cGVyYWRtaW5AcXVhbnR1bWlvdC5jb20iLCJyZW1vdGVfaWQiOm51bGwsIm9hdXRoX3Byb3ZpZGVyIjpudWxsLCJvYXV0aF90b2tlbl90eXBlIjpudWxsLCJvYXV0aF9hY2Nlc3NfdG9rZW4iOm51bGwsIm9hdXRoX3Njb3BlIjpudWxsLCJjcmVhdGVkX2F0IjoiMjAxNy0wMS0wN1QxODo0MDo0NC4zNjRaIiwidXBkYXRlZF9hdCI6IjIwMTctMDEtMDdUMTg6NDA6NDQuMzY0WiIsImFjY291bnRfaWQiOm51bGwsInJvbGVfaWQiOjIsInBhc3N3b3JkX2hhc2giOiIkMmEkMTAkQ1dHTUJsV0R3TC5yNldhczRXSUpwT3Zjb2dLSlEzRmpCVGxzNlNWT3lwWlBoMkhadDBsb1MiLCJwYXNzd29yZF9zYWx0IjoiJDJhJDEwJENXR01CbFdEd0wucjZXYXM0V0lKcE8iLCJhdXRoX3R5cGUiOiJwYXNzd29yZCIsInRlYW1faWQiOm51bGwsInJvbGUiOnsiaWQiOjIsIm5hbWUiOiJzdXBlci1hZG1pbiJ9LCJpYXQiOjE0ODQ3NjMxNDksImV4cCI6MTQ4NTM2Nzk0OX0.dclfHnVn7aDoxMEf4ccQhWBIJpH2lKFhLLTOTumInWM';
     });
 
     afterEach(function(){
-      delete config.settings.auth_token;
+      delete config.settings.user_token;
     });
 
     it('should report there is no current user',function(){

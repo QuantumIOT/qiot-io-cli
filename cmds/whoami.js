@@ -9,8 +9,8 @@ module.exports = function(options,callback){
 
   callback = cmd.ensureGoodCallback(callback);
 
-  if (cmd.config.settings.auth_token)
-    cmd.dumpObject(jwtdecode(cmd.config.settings.auth_token));
+  if (cmd.config.settings.user_token)
+    cmd.dumpObject(jwtdecode(cmd.config.settings.user_token));
   else
     cmd.logger.error('no current user');
 

@@ -25,7 +25,7 @@ module.exports = function(options,callback){
 
       if (result.statusCode !== host.allCodes.OK || !result.data.token) return callback('unsuccessful signin: ' + host.allCodes.getStatusText(result.statusCode));
 
-      cmd.config.update({auth_token: result.data.token});
+      cmd.config.update({user_token: result.data.token});
 
       callback(null);
 

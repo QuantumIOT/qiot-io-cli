@@ -41,15 +41,15 @@ describe('Command: signin',function() {
 
     test.mockHelpers.checkMockFiles(
       [[config.config_file,'default'],[config.config_file,'success']],
-      [[config.config_file,{auth_token: 'TOKEN'}]]);
+      [[config.config_file,{user_token: 'TOKEN'}]]);
     test.loggerCheckEntries([
       'DEBUG - host POST /users/signin : {"email":"test@test.com","password":"testing!!"}',
       'DEBUG - host output: {"status":"success","token":"TOKEN"}',
       'DEBUG - host status: OK',
-      'DEBUG - update config: {"auth_token":"TOKEN"}'
+      'DEBUG - update config: {"user_token":"TOKEN"}'
     ]);
 
-    delete config.settings.auth_token;
+    delete config.settings.user_token;
   }
 
   describe('when all commander options are given',function(){
