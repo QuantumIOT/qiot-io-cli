@@ -1,5 +1,6 @@
 var _ = require('lodash');
 
+var logger = require(process.cwd() + '/lib/logger');
 var helpers = require(process.cwd() + '/lib/helpers');
 
 var test = {};
@@ -26,7 +27,7 @@ test.deferAssertions = function(done,callback){
 test.standardBeforeEach = function(allowed){
   test.mockery.enable();
   test.mockery.warnOnReplace(false);
-  test.mockery.registerAllowables(_.concat(allowed || [],['lodash','./config',test.configGuard.requirePath]));
+  test.mockery.registerAllowables(_.concat(allowed || [],['lodash','./config','./logger',test.configGuard.requirePath]));
   test.loggerBeforeEach();
   test.mockery.registerMock('./helpers',test.mockHelpers);
   test.mockHelpers.resetMock();
@@ -34,13 +35,13 @@ test.standardBeforeEach = function(allowed){
   var config = test.configGuard.beginGuarding();
   test.mockHelpers.resetMock();
 
-  test.mockLogger.debugging = true;
+  logger.debugging = true;
 
   return config;
 };
 
 test.standardAfterEach = function(){
-  test.mockLogger.debugging = false;
+  logger.debugging = false;
 
   test.configGuard.finishGuarding();
 
@@ -50,17 +51,30 @@ test.standardAfterEach = function(){
   test.mockery.disable();
 };
 
+var logEntriesSeen = 0;
+var loggerStub = null;
+
 test.loggerBeforeEach = function(){
-  test.mockery.registerMock('./logger', test.mockLogger);
-  test.mockLogger.resetMock();
+  logger.timestamp = false;
+  logEntriesSeen = 0;
+  loggerStub = test.sinon.stub(logger,'consoleLOG').returns();
 };
 
 test.loggerAfterEach = function(){
   test.loggerCheckEntries();
+  loggerStub.restore();
+  loggerStub = null;
+  logger.timestamp = true;
 };
 
 test.loggerCheckEntries = function(expected){
-  test.mockLogger.checkMockLogEntries(expected);
+  var actuals = [];
+  var calls = loggerStub.getCalls();
+
+  while (logEntriesSeen < calls.length)
+    actuals.push(calls[logEntriesSeen++].args[0]);
+
+  actuals.should.eql(expected || []);
 };
 
 // CONFIG GUARD
@@ -123,37 +137,6 @@ MockHelpers.saveJSON = function(filename, json){
 MockHelpers.resetMock();
 
 test.mockHelpers = MockHelpers;
-
-// MOCK LOGGER
-
-var MockLogger = {debugging: false};
-
-MockLogger.resetMock = function(){
-  MockLogger.showLogs = false;
-  MockLogger.logEntries = [];
-};
-
-MockLogger.checkMockLogEntries = function(expectation){
-  MockLogger.logEntries.should.eql(expectation || []);
-  MockLogger.logEntries = [];
-};
-
-MockLogger.message = function(string){
-  if (MockLogger.showLogs) console.log(string);
-  MockLogger.logEntries.push(string);
-};
-
-MockLogger.error = function(error) {
-  MockLogger.message('ERROR - ' + error);
-};
-
-MockLogger.debug = function(debug){
-  MockLogger.debugging && MockLogger.message('DEBUG - ' + (typeof debug == 'function' ? debug() : debug));
-};
-
-MockLogger.resetMock();
-
-test.mockLogger = MockLogger;
 
 // MOCK HTTP(S)
 
