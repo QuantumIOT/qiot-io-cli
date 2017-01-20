@@ -7,7 +7,7 @@ The `qiot-io-cli` allows an authorized user to access the APIs for any instance 
 ### Command Summary
 
 ```
-  Usage: qc [options] [command]
+  Usage: qc [options] <command> ...
 
   Commands:
 
@@ -51,9 +51,31 @@ you can find your `account_token` on the settings page when logging in as a web 
 
 This information is stored in the current working directory called `.qc.json`.
 
+NOTE: `qc` is sensitive to current working directory where `.qc.json` is stored.
+this allows you to have different profiles for execution by changing working directory.
+
 ##### Sign In
 
 Next, use `qc signin` to sign in to the services layer to receive a `user_token` that will be used
 to authenticate your API requests.
 
 NOTE: At this time, only local users are able to use the `qc signin` command.
+
+### Next Steps
+
+* Support loading message bodies from the file system
+* Support centralized storage of multiple profiles
+* Support socket-io endpoints
+* Support TSV and CSV output formats
+* More sophisticated support for FOTA/COTA
+
+### How to contribute?
+
+You are welcome to help add/extend this tool.
+
+To do so, please use pull requests and follow the general style of the code already in place.
+
+NOTE: This tool is designed to run using node v4.5.0 in order to support embedded Linux.
+This means that _ES6 syntax should NOT be used_.
+
+Thanks!

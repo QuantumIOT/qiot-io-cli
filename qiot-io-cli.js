@@ -6,8 +6,11 @@ var events = require('events');
 
 var helpers = require('./lib/helpers');
 
+var usage = '[options] <command> ...';
+
 commander
   .version(helpers.readJSON('package.json',{},{}).version)
+  .usage(usage)
   .option('-a --account <id-or-token>','target account (save-able)')
   .option('-c --collection <id-or-token>','target collection (save-able)')
   .option('-n --limit <number>','limit used for some queries')
@@ -87,3 +90,5 @@ commander
   .action(require('./cmds/mailbox'));
 
 commander.parse(process.argv);
+
+if (process.argv.length <= 2) console.log('usage: qc ' + usage + ' (option -h for details)');
