@@ -8,10 +8,8 @@ var helpers = require('./lib/helpers');
 
 commander
   .version(helpers.readJSON('package.json',{},{}).version)
-  .option('-p --profile <name>','user profile')
   .option('-a --account <id-or-token>','target account (save-able)')
   .option('-c --collection <id-or-token>','target collection (save-able)')
-  .option('-t --thing <id-or-token>','target thing (save-able)')
   .option('-n --limit <number>','limit used for some queries')
   .option('-s --save','remember the applicable options as "current"')
   .option('--clear','forget the applicable options as "current"')
@@ -31,7 +29,7 @@ commander
 
 commander
   .command('impersonate [userid]')
-  .description('impersonate a user')
+  .description('impersonate a userid, or clear impersonation if none provided')
   .alias('i')
   .action(require('./cmds/impersonate'));
 
@@ -68,7 +66,7 @@ commander
 commander
   .command('messages [thing_token]')
   .description('list most recent messages')
-  .alias('m')
+  .alias('ms')
   .action(require('./cmds/messages'));
 
 commander
@@ -83,15 +81,9 @@ commander
   .action(require('./cmds/log'));
 
 commander
-  .command('receive <thing_token>')
-  .description('receive the mailbox entry for a thing')
-  .alias('r')
-  .action(require('./cmds/receive'));
-
-commander
-  .command('send <thing_token> <message>')
-  .description('send a message to the mailbox for a thing')
-  .alias('s')
-  .action(require('./cmds/send'));
+  .command('mailbox <thing_token> [message]')
+  .description('receive the mailbox entry for a thing without a message, send with one')
+  .alias('mb')
+  .action(require('./cmds/mailbox'));
 
 commander.parse(process.argv);

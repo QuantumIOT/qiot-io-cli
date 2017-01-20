@@ -3,15 +3,15 @@ var _ = require('lodash');
 var CMD = require('../lib/cmd');
 var HOST = require('../lib/host');
 
-module.exports = function(){
+module.exports = function(userid){
   var cmd = new CMD();
   var host = new HOST(true);
 
   var callback = cmd.ensureGoodCallback(arguments);
 
-  if (!cmd.options.user) return callback('no user given');
+  var endpoint = userid ? '/users/users/' + userid + '/impersonate' : '/users/users/reload';
 
-  host.put('/users/users/' + cmd.options.user + '/impersonate').then(function(result){
+  host.put(endpoint).then(function(result){
     cmd.safeguard(callback,function(){
       if (result.statusCode !== HOST.allCodes.OK || !result.data.token) return callback('unsuccessful impersonation: ' + HOST.allCodes.getStatusText(result.statusCode));
 

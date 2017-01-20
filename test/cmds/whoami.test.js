@@ -7,11 +7,11 @@ var whoami = require(process.cwd() + '/cmds/whoami');
 
 describe('Command: whoami',function() {
   var config = null;
+  var commander = null;
 
   beforeEach(function () {
-    commander.raw = true;
-
-    config = test.standardBeforeEach(['prompt','commander']);
+    config = test.standardBeforeEach(['prompt']);
+    test.mockery.registerMock('commander',commander = {raw: true});
   });
 
   afterEach(test.standardAfterEach);
@@ -21,6 +21,31 @@ describe('Command: whoami',function() {
       whoami({},function(){
         test.loggerCheckEntries([
           'ERROR - no user token',
+          [
+            ' current_user                   \n',
+            ' current_account                \n',
+            ' current_collection             \n',
+            ' current_thing                  \n'
+          ].join('')
+        ]);
+        done();
+      });
+    })
+  });
+
+  describe('when an invalid user_token exists',function(){
+    beforeEach(function(){
+      config.settings.user_token = 'TOKEN';
+    });
+
+    afterEach(function(){
+      delete config.settings.user_token;
+    });
+
+    it('should report and error',function(done){
+      whoami({},function(){
+        test.loggerCheckEntries([
+          'ERROR - invalid token: TOKEN',
           [
             ' current_user                   \n',
             ' current_account                \n',

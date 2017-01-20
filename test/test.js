@@ -160,7 +160,7 @@ MockHTTP.prototype.on = function(event,callback){
   self.eventCallbacks[event] = callback;
   if (event == 'end')
     _.defer(function(){
-      if (self.dataToRead) self.eventCallbacks.data(self.dataToRead);
+      _.each(_.concat([],self.dataToRead || []),self.eventCallbacks.data);
       self.eventCallbacks.end(null);
     });
 

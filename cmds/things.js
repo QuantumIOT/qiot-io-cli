@@ -25,6 +25,8 @@ function thingsForCollection(cmd,host,callback){
 
       cmd.dumpTable(['id', 'label', 'thing_token', 'collection_token', 'account_token', 'collection_id', 'last_reported_at', 'identities.0.type', 'identities.0.value'], result.data.collection.things);
 
+      cmd.checkSaveClear(cmd.COLLECTION_OPTION);
+
       callback(null);
     });
   },callback);
@@ -36,6 +38,8 @@ function thingsForAccount(cmd,host,callback){
       if (result.statusCode !== HOST.allCodes.OK || !result.data.things) return callback(HOST.allCodes.getStatusText(result.statusCode));
 
       cmd.dumpTable(['id', 'label', 'thing_token', 'collection_token', 'account_token', 'collection_id', 'last_reported_at', 'identities.0.type', 'identities.0.value'], result.data.things);
+
+      cmd.checkSaveClear(cmd.ACCOUNT_OPTION);
 
       callback(null);
     });

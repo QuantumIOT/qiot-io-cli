@@ -12,7 +12,7 @@ The `qiot-io-cli` allows an authorized user to access the APIs for any instance 
 
     init                            initialize general configuration settings
     signin|si [email] [password]    signin a local user with email and password
-    impersonate|i [userid]          impersonate a user
+    impersonate|i [userid]          impersonate a userid, or clear impersonation if none provided
     whoami|?                        dump current user information
     accounts|a                      list visible accounts
     collections|c                   list collections for an account
@@ -28,10 +28,8 @@ The `qiot-io-cli` allows an authorized user to access the APIs for any instance 
 
     -h, --help                     output usage information
     -V, --version                  output the version number
-    -p --profile <name>            user profile
     -a --account <id-or-token>     target account (save-able)
     -c --collection <id-or-token>  target collection (save-able)
-    -t --thing <id-or-token>       target thing (save-able)
     -n --limit <number>            limit used for some queries
     -s --save                      remember the applicable options as "current"
     --clear                        forget the applicable options as "current"

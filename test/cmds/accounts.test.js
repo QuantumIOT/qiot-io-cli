@@ -1,5 +1,4 @@
 var _ = require('lodash');
-var commander = require('commander');
 
 var test = require('../test');
 
@@ -8,11 +7,13 @@ var accounts = require(process.cwd() + '/cmds/accounts');
 describe('Command: accounts',function() {
   var config = null;
   var mockHTTP = null;
+  var commander = null;
 
   beforeEach(function () {
-    config = test.standardBeforeEach(['commander','prompt']);
+    config = test.standardBeforeEach(['prompt']);
 
     test.mockery.registerMock('https',mockHTTP = new test.MockHTTP());
+    test.mockery.registerMock('commander',commander = {raw: true});
   });
 
   afterEach(test.standardAfterEach);
@@ -37,8 +38,6 @@ describe('Command: accounts',function() {
 
   it('should print accounts to console on success',function(done){
     mockHTTP.dataToRead = JSON.stringify({status: 'success',accounts: [{id: 1,name: 'test',token_identifier: 'ID',token_secret: 'SECRET',account_token: 'TOKEN',users: [{id: 123,email: 'test@test.com'}]}]});
-
-    commander.raw = true;
 
     accounts({},function(result){
       test.safeAssertions(done,function(){
