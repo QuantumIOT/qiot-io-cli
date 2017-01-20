@@ -10,19 +10,18 @@ The `qiot-io-cli` allows an authorized user to access the APIs for any instance 
 
   Commands:
 
-    init                            initialize general configuration settings
-    signin|si [email] [password]    signin a local user with email and password
-    impersonate|i [userid]          impersonate a userid, or clear impersonation if none provided
-    whoami|?                        dump current user information
-    accounts|a                      list visible accounts
-    collections|c                   list collections for an account
-    things|t                        list things for an account or collection
-    users|u                         list users
-    messages|m [thing_token]        list most recent messages
-    rest <method> <uri> [body]      make a REST api call
-    log|l <thing_token> <message>   log a message for a thing
-    receive|r <thing_token>         receive the mailbox entry for a thing
-    send|s <thing_token> <message>  send a message to the mailbox for a thing
+    init                                initialize general configuration settings
+    signin|si [email] [password]        signin a local user with email and password
+    impersonate|i [userid]              impersonate a userid, or clear impersonation if none provided
+    whoami|?                            dump current user information
+    accounts|a                          list visible accounts
+    collections|c                       list collections for an account
+    things|t                            list things for an account or collection
+    users|u                             list users
+    messages|ms [thing_token]           list most recent messages
+    rest <method> <uri> [body]          make a REST api call
+    log|l <thing_token> <message>       log a message for a thing
+    mailbox|mb <thing_token> [message]  receive the mailbox entry for a thing without a message, send with one
 
   Options:
 

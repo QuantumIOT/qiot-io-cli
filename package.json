@@ -1,8 +1,11 @@
 {
-  "name": "qiot-io-cli",
+  "name": "@qiot/qiot-io-cli",
   "version": "0.0.0",
   "description": "command line interface tool for qiot.io",
   "main": "qiot-io-cli.js",
+  "bin": {
+    "qc": "bin/qc"
+  },
   "scripts": {
     "test": "nyc mocha --recursive"
   },
