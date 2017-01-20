@@ -11,7 +11,7 @@ module.exports = function(){
 
   host.get('/users').then(function(result){
     cmd.safeguard(callback,function() {
-      if (result.statusCode !== HOST.allCodes.OK || !result.data.users) return callback(HOST.allCodes.getStatusText(result.statusCode));
+      if (result.statusCode !== HOST.allCodes.OK || !result.data.users) return callback(HOST.describeResult(result));
 
       cmd.dumpTable(['id','name','email','account_id','role.name','oauth_provider'], result.data.users);
 

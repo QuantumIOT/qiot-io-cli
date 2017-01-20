@@ -13,7 +13,7 @@ module.exports = function(userid){
 
   host.put(endpoint).then(function(result){
     cmd.safeguard(callback,function(){
-      if (result.statusCode !== HOST.allCodes.OK || !result.data.token) return callback('unsuccessful impersonation: ' + HOST.allCodes.getStatusText(result.statusCode));
+      if (result.statusCode !== HOST.allCodes.OK || !result.data.token) return callback('unsuccessful impersonation: ' + HOST.describeResult(result));
 
       cmd.establishUser(result.data.token);
 

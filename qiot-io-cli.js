@@ -92,7 +92,6 @@ commander
   .action(require('./cmds/mailbox'));
 
 commander
-  .command('*')
   .action(function(env){
     console.log('unknown command: ' + JSON.stringify(env));
   });

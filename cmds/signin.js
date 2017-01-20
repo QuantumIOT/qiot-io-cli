@@ -26,7 +26,7 @@ module.exports = function(email,password){
 
     host.post('/users/signin',{email: cmd.options.email,password: cmd.options.password}).then(function(result){
       cmd.safeguard(callback,function() {
-        if (result.statusCode !== HOST.allCodes.OK || !result.data.token) return callback('unsuccessful signin: ' + HOST.allCodes.getStatusText(result.statusCode));
+        if (result.statusCode !== HOST.allCodes.OK || !result.data.token) return callback('unsuccessful signin: ' + HOST.describeResult(result));
 
         cmd.establishUser(result.data.token);
 

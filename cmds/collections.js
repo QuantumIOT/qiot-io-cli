@@ -13,7 +13,7 @@ module.exports = function(){
 
   host.get('/users/accounts/' + cmd.options[CMD.ACCOUNT_OPTION] + '/collections').then(function(result){
     cmd.safeguard(callback,function() {
-      if (result.statusCode !== HOST.allCodes.OK || !result.data.collections) return callback(HOST.allCodes.getStatusText(result.statusCode));
+      if (result.statusCode !== HOST.allCodes.OK || !result.data.collections) return callback(HOST.describeResult(result));
 
       cmd.dumpTable(['id', 'name', 'auth_token'], result.data.collections); // TODO - auth_token => collection_token
 

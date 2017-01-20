@@ -19,7 +19,7 @@ module.exports = function(thingToken){
 
   host.get(endpoint).then(function(result){
     cmd.safeguard(callback,function() {
-      if (result.statusCode !== HOST.allCodes.OK) return callback(HOST.allCodes.getStatusText(result.statusCode));
+      if (result.statusCode !== HOST.allCodes.OK) return callback(HOST.describeResult(result));
 
       if (result.data.messages.length > 0)       cmd.dumpTable(['accountToken','thingToken','id','message.time'],result.data.messages);
       if (result.data.binaryMessages.length > 0) cmd.dumpTable(['accountToken','thingToken','id','message.time'],result.data.binaryMessages);

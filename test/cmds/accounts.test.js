@@ -19,16 +19,18 @@ describe('Command: accounts',function() {
   afterEach(test.standardAfterEach);
 
   it('should handle an HTTP error code',function(done){
-    mockHTTP.statusCode = 403;
+    mockHTTP.statusCode = 401;
+    mockHTTP.dataToRead = 'No Authorization header found';
 
     accounts({},function(result){
       test.safeAssertions(done,function(){
 
-        [result].should.eql(['Forbidden']);
+        [result].should.eql(['Unauthorized: No Authorization header found']);
 
         test.loggerCheckEntries([
           'DEBUG - host (qiot.io) GET /users/accounts : null',
-          'DEBUG - host status: Forbidden'
+          'DEBUG - host output: No Authorization header found',
+          'DEBUG - host status: Unauthorized'
         ]);
 
         done();
