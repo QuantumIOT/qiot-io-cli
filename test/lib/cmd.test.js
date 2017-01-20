@@ -2,7 +2,7 @@ var test = require('../test');
 
 var CMD = require(process.cwd() + '/lib/cmd');
 
-describe('cmd',function() {
+describe('CMD',function() {
   var config = null;
   var commander = null;
 

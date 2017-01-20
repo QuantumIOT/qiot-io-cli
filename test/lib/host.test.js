@@ -2,7 +2,7 @@ var test = require('../test');
 
 var HOST = require(process.cwd() + '/lib/host');
 
-describe('host',function() {
+describe('HOST',function() {
   var config,mockHTTP,host;
 
   beforeEach(function(){

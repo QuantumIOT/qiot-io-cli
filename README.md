@@ -25,7 +25,6 @@ The `qiot-io-cli` allows an authorized user to access the APIs for any instance 
     rest <method> <uri> [body]          make a REST api call
     log|l <thing_token> <message>       log a message for a thing
     mailbox|mb <thing_token> [message]  receive the mailbox entry for a thing without a message, send with one
-    *
 
   Options:
 
