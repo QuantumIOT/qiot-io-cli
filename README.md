@@ -1,4 +1,5 @@
-# qiot-io-cli
+# qiot-io-cli [![Build Status](https://circleci.com/gh/QuantumIOT/qiot-io-cli/tree/master.svg?style=shield&circle-token=431c98e778c22a698cdb6e5aa88b897ba1e95796)](https://circleci.com/gh/QuantumIOT/qiot-io-cli)
+
 
 ### Overview
 The `qiot-io-cli` allows an authorized user to access the APIs for any instance of the `qiot-io` platform.
