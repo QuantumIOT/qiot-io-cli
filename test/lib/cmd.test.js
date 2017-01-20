@@ -5,19 +5,18 @@ var CMD = require(process.cwd() + '/lib/cmd');
 describe('cmd',function() {
   var config = null;
   var commander = null;
-  var cmd = null;
 
   beforeEach(function(){
     config = test.standardBeforeEach(['prompt']);
     test.mockery.registerMock('commander',commander = {raw: true});
-
-    cmd = new CMD();
   });
 
   afterEach(test.standardAfterEach);
 
   describe('establishUser',function(){
     it('can handle an invalid token',function(){
+      var cmd = new CMD();
+
       cmd.establishUser('TOKEN');
 
       delete config.settings.user_token;
@@ -38,6 +37,8 @@ describe('cmd',function() {
     var object = {a: 1, b: 2, c: 3, d: 4};
 
     it('should display all the key-value pairs',function(){
+      var cmd = new CMD();
+
       cmd.dumpObject(object);
 
       test.loggerCheckEntries([[
@@ -51,6 +52,8 @@ describe('cmd',function() {
     it('should display the key column in bold if raw option not set',function(){
       commander.raw = false;
 
+      var cmd = new CMD();
+
       cmd.dumpObject(object);
 
       test.loggerCheckEntries([[
@@ -60,6 +63,38 @@ describe('cmd',function() {
         ' \u001b[1m\u001b[1m\u001b[1m\u001b[1md\u001b[22m   4 \n',''
       ].join('')])
     });
+
+    it('should create CSV output',function(){
+      commander.raw = false;
+      commander.csv = true;
+
+      var cmd = new CMD();
+
+      cmd.dumpObject(object);
+
+      test.loggerCheckEntries([
+        'a,1',
+        'b,2',
+        'c,3',
+        'd,4'
+      ])
+    });
+
+    it('should create TSV output',function(){
+      commander.raw = false;
+      commander.tsv = true;
+
+      var cmd = new CMD();
+
+      cmd.dumpObject(object);
+
+      test.loggerCheckEntries([
+        'a\t1',
+        'b\t2',
+        'c\t3',
+        'd\t4'
+      ])
+    });
   });
 
   describe('dumpTable',function(){
@@ -67,6 +102,8 @@ describe('cmd',function() {
     var objects = [{a: 1, b: 2, c: 3, d: 4}];
 
     it('should display only the selected fields',function(){
+      var cmd = new CMD();
+
       cmd.dumpTable(fields,objects);
 
       test.loggerCheckEntries([[
@@ -78,6 +115,8 @@ describe('cmd',function() {
 
     it('should display bold headers when raw option not set',function(){
       commander.raw = false;
+
+      var cmd = new CMD();
 
       cmd.dumpTable(fields,objects);
 
@@ -91,12 +130,75 @@ describe('cmd',function() {
     it('should override display fields with verbose option',function(){
       commander.verbose = true;
 
+      var cmd = new CMD();
+
       cmd.dumpTable(fields,objects);
 
       test.loggerCheckEntries([[
         ' a   b   c   d \n',
         '─── ─── ─── ───\n',
         ' 1   2   3   4 \n'
+      ].join('')])
+    });
+
+    it('should create CSV output ',function(){
+      commander.raw = false;
+      commander.csv = true;
+
+      var cmd = new CMD();
+
+      cmd.dumpTable(fields,objects);
+
+      test.loggerCheckEntries([
+        'a,d',
+        '1,4'
+      ])
+    });
+
+    it('should create TSV output',function(){
+      commander.raw = false;
+      commander.tsv = true;
+
+      var cmd = new CMD();
+
+      cmd.dumpTable(fields,objects);
+
+      test.loggerCheckEntries([
+        'a\td',
+        '1\t4'
+      ])
+    });
+
+    it('should order verbose field columns by levels before alphabetical order',function(){
+      commander.verbose = true;
+
+      var cmd = new CMD();
+
+      cmd.dumpTable([],[{
+        z : 1,
+        y : {
+          a : 4,
+          w : {
+            x: 7,
+            b: 6,
+          }
+        },
+        c: {
+          e: 2,
+          f: 3,
+          d: {
+            h: 5,
+            g: {
+              i: 8
+            }
+          }
+        }
+      }]);
+
+      test.loggerCheckEntries([[
+        ' z   c.e   c.f   y.a   c.d.h   y.w.b   y.w.x   c.d.g.i \n',
+        '─── ───── ───── ───── ─────── ─────── ─────── ─────────\n',
+        ' 1   2     3     4     5       6       7       8       \n'
       ].join('')])
     })
   });
@@ -106,7 +208,7 @@ describe('cmd',function() {
 
     beforeEach(function(){
       key = 'test';
-      current_key = cmd.CURRENT_OPTION_PREFIX + key;
+      current_key = CMD.CURRENT_OPTION_PREFIX + key;
 
       oldSettings = {};
       oldSettings[current_key] = config.settings[current_key] = 'old';
@@ -119,6 +221,8 @@ describe('cmd',function() {
 
     describe('when save and clear are false',function(){
       it('should do nothing',function(){
+        var cmd = new CMD();
+
         cmd.checkSaveClear(key);
       })
     });
@@ -131,6 +235,8 @@ describe('cmd',function() {
       it('should do nothing if the option has not changed',function(){
         commander[key] = config.settings[current_key];
 
+        var cmd = new CMD();
+
         cmd.checkSaveClear(key);
 
         test.mockHelpers.checkMockFiles([[config.config_file,'success']]);
@@ -138,6 +244,8 @@ describe('cmd',function() {
 
       it('should save the option if it has changed',function(){
         commander[key] = 'new';
+
+        var cmd = new CMD();
 
         cmd.checkSaveClear(key);
 
@@ -153,6 +261,8 @@ describe('cmd',function() {
         });
 
         it('should clear the option',function(){
+          var cmd = new CMD();
+
           cmd.checkSaveClear(key);
 
           test.loggerCheckEntries(['DEBUG - update config: {}']);
@@ -162,9 +272,93 @@ describe('cmd',function() {
     });
   });
 
+  describe('outputCSV',function(){
+    it('handles no rows',function(){
+      var cmd = new CMD();
+
+      cmd.outputCSV();
+    });
+
+    it('handles undefined values as empty strings',function(){
+      var cmd = new CMD();
+
+      cmd.outputCSV([[undefined,'a']]);
+
+      test.loggerCheckEntries([',a']);
+    });
+
+    it('truncates trailing empty strings',function(){
+      var cmd = new CMD();
+
+      cmd.outputCSV([['a','',undefined,'']]);
+
+      test.loggerCheckEntries(['a']);
+    });
+
+    it('converts Date object to ISO strings',function(){
+      var date = new Date();
+      var cmd = new CMD();
+
+      cmd.outputCSV([[date]]);
+
+      test.loggerCheckEntries([date.toISOString()]);
+    });
+
+    it('ensures that special conditions result in double-quoted values',function(){
+      var cmd = new CMD();
+
+      cmd.outputCSV([[' a','b ',',','"',' \ta",\n"b ']]);
+
+      test.loggerCheckEntries([['" a"','"b "','","','""""','" \ta"",\n""b "'].join(',')]);
+    })
+  });
+
+  describe('outputTSV',function(){
+    it('handles no rows',function(){
+      var cmd = new CMD();
+
+      cmd.outputTSV();
+    });
+
+    it('handles undefined values as empty strings',function(){
+      var cmd = new CMD();
+
+      cmd.outputTSV([[undefined,'a']]);
+
+      test.loggerCheckEntries(['\ta']);
+    });
+
+    it('truncates trailing empty strings',function(){
+      var cmd = new CMD();
+
+      cmd.outputTSV([['a','',undefined,'']]);
+
+      test.loggerCheckEntries(['a']);
+    });
+
+    it('converts Date object to ISO strings',function(){
+      var date = new Date();
+      var cmd = new CMD();
+
+      cmd.outputTSV([[date]]);
+
+      test.loggerCheckEntries([date.toISOString()]);
+    });
+
+    it('ensures that special conditions result in double-quoted values',function(){
+      var cmd = new CMD();
+
+      cmd.outputTSV([[' a','b ',',','"',' \ta,\n"b ']]);
+
+      test.loggerCheckEntries([' a\tb \t,\t"\t  a, "b ']);
+    })
+  });
+
   describe('safeguard',function(){
     it('should catch an error',function(){
       var error = new Error();
+      var cmd = new CMD();
+
       cmd.safeguard(
         function(e){ [e].should.eql([error]); },
         function(){ throw error; }

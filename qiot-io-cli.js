@@ -17,6 +17,8 @@ commander
   .option('-s --save','remember the applicable options as "current"')
   .option('--clear','forget the applicable options as "current"')
   .option('--raw','do not output any ansi special characters')
+  .option('--csv','output query results to CSV format')
+  .option('--tsv','output query results to TSV format')
   .option('-v --verbose','display maximal output');
 
 commander
@@ -88,6 +90,12 @@ commander
   .description('receive the mailbox entry for a thing without a message, send with one')
   .alias('mb')
   .action(require('./cmds/mailbox'));
+
+commander
+  .command('*')
+  .action(function(env){
+    console.log('unknown command: ' + JSON.stringify(env));
+  });
 
 commander.parse(process.argv);
 

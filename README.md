@@ -11,6 +11,8 @@ The `qiot-io-cli` allows an authorized user to access the APIs for any instance 
 
   Commands:
 
+ Commands:
+
     init                                initialize general configuration settings
     signin|si [email] [password]        signin a local user with email and password
     impersonate|i [userid]              impersonate a userid, or clear impersonation if none provided
@@ -23,6 +25,7 @@ The `qiot-io-cli` allows an authorized user to access the APIs for any instance 
     rest <method> <uri> [body]          make a REST api call
     log|l <thing_token> <message>       log a message for a thing
     mailbox|mb <thing_token> [message]  receive the mailbox entry for a thing without a message, send with one
+    *
 
   Options:
 
@@ -34,6 +37,8 @@ The `qiot-io-cli` allows an authorized user to access the APIs for any instance 
     -s --save                      remember the applicable options as "current"
     --clear                        forget the applicable options as "current"
     --raw                          do not output any ansi special characters
+    --csv                          output query results to CSV format
+    --tsv                          output query results to TSV format
     -v --verbose                   display maximal output
 ```
 
@@ -66,7 +71,6 @@ NOTE: At this time, only local users are able to use the `qc signin` command.
 * Support loading message bodies from the file system
 * Support centralized storage of multiple profiles
 * Support socket-io endpoints
-* Support TSV and CSV output formats
 * More sophisticated support for FOTA/COTA
 
 ### How to contribute?
