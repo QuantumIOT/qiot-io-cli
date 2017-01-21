@@ -1,6 +1,6 @@
 {
   "name": "@qiot/qiot-io-cli",
-  "version": "0.0.4",
+  "version": "0.0.5",
   "description": "command line interface tool for qiot.io",
   "main": "qiot-io-cli.js",
   "bin": {
@@ -32,7 +32,7 @@
       "test"
     ],
     "reporter": [
-      "text",
+      "text-summary",
       "html"
     ]
   },
