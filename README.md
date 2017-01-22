@@ -11,9 +11,10 @@ The `qiot-io-cli` allows an authorized user to access the APIs for any instance 
 
   Commands:
 
- Commands:
 
-    init                                initialize general configuration settings
+  Commands:
+
+    init [options]                      initialize general configuration settings
     signin|si [email] [password]        signin a local user with email and password
     impersonate|i [userid]              impersonate a userid, or clear impersonation if none provided
     whoami|?                            dump current user information
@@ -38,7 +39,24 @@ The `qiot-io-cli` allows an authorized user to access the APIs for any instance 
     --raw                          do not output any ansi special characters
     --csv                          output query results to CSV format
     --tsv                          output query results to TSV format
+    --json                         output query results in JSON format
+    --silent                       do not output query results
+    --timestamps                   add timestamps to logs
     -v --verbose                   display maximal output
+```
+
+Also, the `init` command has some special options:
+
+```
+  Usage: init [options]
+
+  initialize general configuration settings
+
+  Options:
+
+    -h, --help  output usage information
+    --defaults  prompt with defaults instead of current settings
+    --reset     reset settings to defaults
 ```
 
 ### Getting Started
