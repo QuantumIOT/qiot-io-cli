@@ -79,6 +79,10 @@ test.loggerCheckEntries = function(expected){
   actuals.should.eql(expected || []);
 };
 
+test.loggerResetEntries = function(){
+  logEntriesSeen = loggerStub.getCalls().length;
+};
+
 // CONFIG GUARD
 
 var ConfigGuard = {requirePath: process.cwd() + '/lib/config'};
@@ -92,7 +96,7 @@ ConfigGuard.beginGuarding = function(){
 };
 
 ConfigGuard.finishGuarding = function(){
-  ConfigGuard.config.settings.should.eql(JSON.parse(ConfigGuard.previous));
+  JSON.parse(JSON.stringify(ConfigGuard.config.settings)).should.eql(JSON.parse(ConfigGuard.previous));
 };
 
 test.configGuard = ConfigGuard;

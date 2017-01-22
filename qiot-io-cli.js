@@ -23,6 +23,8 @@ commander
 
 commander
   .command('init')
+  .option('--defaults','prompt with defaults instead of current settings')
+  .option('--reset','reset settings to defaults')
   .description('initialize general configuration settings')
   .action(require('./cmds/init'));
 
