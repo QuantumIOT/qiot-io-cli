@@ -19,6 +19,7 @@ commander
   .option('--raw','do not output any ansi special characters')
   .option('--csv','output query results to CSV format')
   .option('--tsv','output query results to TSV format')
+  .option('--timestamps','add timestamps to logs')
   .option('-v --verbose','display maximal output');
 
 commander
