@@ -95,6 +95,28 @@ describe('CMD',function() {
         'd\t4'
       ])
     });
+
+    it('should create JSON output',function(){
+      commander.json = true;
+
+      var cmd = new CMD();
+
+      cmd.dumpObject(object);
+
+      test.loggerCheckEntries([
+        JSON.stringify(object,null,2)
+      ])
+    });
+
+    it('should produce no output',function(){
+      commander.silent = true;
+
+      var cmd = new CMD();
+
+      cmd.dumpObject(object);
+
+      test.loggerCheckEntries([])
+    });
   });
 
   describe('dumpTable',function(){
@@ -200,7 +222,29 @@ describe('CMD',function() {
         '─── ───── ───── ───── ─────── ─────── ─────── ─────────\n',
         ' 1   2     3     4     5       6       7       8       \n'
       ].join('')])
-    })
+    });
+
+    it('should create JSON output',function(){
+      commander.json = true;
+
+      var cmd = new CMD();
+
+      cmd.dumpTable([],objects);
+
+      test.loggerCheckEntries([
+        JSON.stringify(objects,null,2)
+      ])
+    });
+
+    it('should produce no output',function(){
+      commander.silent = true;
+
+      var cmd = new CMD();
+
+      cmd.dumpTable([],objects);
+
+      test.loggerCheckEntries([])
+    });
   });
 
   describe('checkSaveClear',function(){
