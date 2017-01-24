@@ -48,7 +48,7 @@ describe('helpers',function(){
 
     it('should log an error if saving fails',function(){
       helpers.saveJSON(null,{success: true});
-      test.loggerCheckEntries(['ERROR - save JSON error - TypeError: path must be a string']);
+      test.loggerCheckEntries(['ERROR - save JSON error: TypeError: path must be a string']);
     })
   });
 

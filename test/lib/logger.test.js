@@ -31,7 +31,13 @@ describe('logger',function() {
       helpers.timestamp = false;
       helpers.message('test');
       output.should.eql(['test'])
-    })
+    });
+
+    it('should format a data argument',function(){
+      helpers.timestamp = false;
+      helpers.message('test',{});
+      output.should.eql(['test: {}'])
+    });
   });
 
   describe('error',function(){
@@ -44,7 +50,13 @@ describe('logger',function() {
       helpers.timestamp = false;
       helpers.error('test');
       output.should.eql(['ERROR - test'])
-    })
+    });
+
+    it('should format a data argument',function(){
+      helpers.timestamp = false;
+      helpers.error('test',{});
+      output.should.eql(['ERROR - test: {}'])
+    });
   });
 
   describe('debug',function(){
@@ -57,6 +69,13 @@ describe('logger',function() {
       helpers.debugging = true;
       helpers.debug('test');
       output.should.match(/\d\d\d\d-\d\d-\d\dT\d\d:\d\d\:\d\d.\d\d\dZ - DEBUG - test/)
+    });
+
+    it('should format a data argument',function(){
+      helpers.debugging = true;
+      helpers.timestamp = false;
+      helpers.debug('test',{});
+      output.should.eql(['DEBUG - test: {}'])
     });
 
     it('should NOT include a timestamp when false and debugging true',function(){

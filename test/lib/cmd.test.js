@@ -248,7 +248,7 @@ describe('CMD',function() {
   });
 
   describe('checkSaveClear',function(){
-    var key, current_key,oldSettings;
+    var key,current_key,oldSettings;
 
     beforeEach(function(){
       key = 'test';
@@ -317,24 +317,43 @@ describe('CMD',function() {
   });
 
   describe('outputCSV',function(){
+    var testFunction = 'outputCSV';
+
     it('handles no rows',function(){
       var cmd = new CMD();
 
-      cmd.outputCSV();
+      cmd[testFunction]();
     });
 
     it('handles undefined values as empty strings',function(){
       var cmd = new CMD();
 
-      cmd.outputCSV([[undefined,'a']]);
+      cmd[testFunction]([[undefined,'a']]);
 
       test.loggerCheckEntries([',a']);
+    });
+
+    it('handles null values as empty strings',function(){
+      var cmd = new CMD();
+
+      cmd[testFunction]([[null,'a']]);
+
+      test.loggerCheckEntries([',a']);
+    });
+
+
+    it('handles objects that were not flattened',function(){
+      var cmd = new CMD();
+
+      cmd[testFunction]([[{test: 1},'a']]);
+
+      test.loggerCheckEntries(['"{""test"":1}",a']);
     });
 
     it('truncates trailing empty strings',function(){
       var cmd = new CMD();
 
-      cmd.outputCSV([['a','',undefined,'']]);
+      cmd[testFunction]([['a','',undefined,'']]);
 
       test.loggerCheckEntries(['a']);
     });
@@ -343,7 +362,7 @@ describe('CMD',function() {
       var date = new Date();
       var cmd = new CMD();
 
-      cmd.outputCSV([[date]]);
+      cmd[testFunction]([[date]]);
 
       test.loggerCheckEntries([date.toISOString()]);
     });
@@ -351,31 +370,49 @@ describe('CMD',function() {
     it('ensures that special conditions result in double-quoted values',function(){
       var cmd = new CMD();
 
-      cmd.outputCSV([[' a','b ',',','"',' \ta",\n"b ']]);
+      cmd[testFunction]([[' a','b ',',','"',' \ta",\n"b ']]);
 
       test.loggerCheckEntries([['" a"','"b "','","','""""','" \ta"",\n""b "'].join(',')]);
     })
   });
 
   describe('outputTSV',function(){
+    var testFunction = 'outputTSV';
+
     it('handles no rows',function(){
       var cmd = new CMD();
 
-      cmd.outputTSV();
+      cmd[testFunction]();
     });
 
     it('handles undefined values as empty strings',function(){
       var cmd = new CMD();
 
-      cmd.outputTSV([[undefined,'a']]);
+      cmd[testFunction]([[undefined,'a']]);
 
       test.loggerCheckEntries(['\ta']);
+    });
+
+    it('handles null values as empty strings',function(){
+      var cmd = new CMD();
+
+      cmd[testFunction]([[null,'a']]);
+
+      test.loggerCheckEntries(['\ta']);
+    });
+
+    it('handles objects that were not flattened',function(){
+      var cmd = new CMD();
+
+      cmd[testFunction]([[{test: 1},'a']]);
+
+      test.loggerCheckEntries(['{"test":1}\ta']);
     });
 
     it('truncates trailing empty strings',function(){
       var cmd = new CMD();
 
-      cmd.outputTSV([['a','',undefined,'']]);
+      cmd[testFunction]([['a','',undefined,'']]);
 
       test.loggerCheckEntries(['a']);
     });
@@ -384,7 +421,7 @@ describe('CMD',function() {
       var date = new Date();
       var cmd = new CMD();
 
-      cmd.outputTSV([[date]]);
+      cmd[testFunction]([[date]]);
 
       test.loggerCheckEntries([date.toISOString()]);
     });
@@ -392,7 +429,7 @@ describe('CMD',function() {
     it('ensures that special conditions result in double-quoted values',function(){
       var cmd = new CMD();
 
-      cmd.outputTSV([[' a','b ',',','"',' \ta,\n"b ']]);
+      cmd[testFunction]([[' a','b ',',','"',' \ta,\n"b ']]);
 
       test.loggerCheckEntries([' a\tb \t,\t"\t  a, "b ']);
     })

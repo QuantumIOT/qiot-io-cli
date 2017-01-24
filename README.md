@@ -61,6 +61,14 @@ Also, the `init` command has some special options:
 
 ### Getting Started
 
+##### Install
+
+You can install globally as follows:
+
+```
+npm install @qiot/qiot-io-cli -g
+```
+
 ##### Configure
 
 Start by using `qc init` to setup your initial configuration settings.
@@ -76,12 +84,16 @@ This information is stored in the current working directory called `.qc.json`.
 NOTE: `qc` is sensitive to current working directory where `.qc.json` is stored.
 this allows you to have different profiles for execution by changing working directory.
 
-##### Sign In
+##### Sign In or Capture API Token
 
-Next, use `qc signin` to sign in to the services layer to receive a `user_token` that will be used
+If you are a superadmin on your `qiot.io` deployment,
+use `qc signin` to sign in to the services layer to receive a `user_token` that will be used
 to authenticate your API requests.
 
 NOTE: At this time, only local users are able to use the `qc signin` command.
+
+Otherwise, you can capture the "API Token" to clipboard on the "Settings" page of the web application.
+Paste this as the `user_token` when prompted in the `qc init` command. 
 
 ### Next Steps
 
@@ -96,7 +108,9 @@ You are welcome to help add/extend this tool.
 
 To do so, please use pull requests and follow the general style of the code already in place.
 
-NOTE: This tool is designed to run using node v4.5.0 in order to support embedded Linux.
-This means that _ES6 syntax should NOT be used_.
+For a pull request to be accepted, it _must_ maintain the commitment to 100% code coverage.
+
+_*NOTE*: This tool is designed to run using node v4.5.0 in order to support embedded Linux.
+This means that *ES6 syntax* should *NOT* be used._
 
 Thanks!
