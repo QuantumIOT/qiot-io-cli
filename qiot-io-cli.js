@@ -97,6 +97,12 @@ commander
   .action(require('./cmds/mailbox'));
 
 commander
+  .command('socket <service> <event> <data>')
+  .description('connect using socket.io to a service')
+  .alias('io')
+  .action(require('./cmds/socket'));
+
+commander
   .action(function(env){
     console.log('unknown command: ' + JSON.stringify(env));
   });
