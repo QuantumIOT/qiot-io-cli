@@ -105,7 +105,7 @@ describe('Command: signin',function() {
 
           promptStub.getCalls().length.should.eql(0);
 
-          [result].should.eql(['unsuccessful signin: Forbidden']);
+          [result].should.eql(['Forbidden']);
 
           test.loggerCheckEntries([
             'DEBUG - host (qiot.io) POST /users/signin : {"email":"test@test.com","password":"testing!!"}',

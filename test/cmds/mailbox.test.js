@@ -22,11 +22,18 @@ describe('Command: mailbox',function() {
 
     describe('when not account_token exists',function(){
       it('should report an error',function(done){
+        mockHTTP.statusCode = 401;
+        mockHTTP.dataToRead = 'No Authorization header found';
+
         mailbox('THING',null,function(result){
           test.safeAssertions(done,function(){
-            [result].should.eql(['no account_token found']);
+            [result].should.eql(['Unauthorized: No Authorization header found']);
 
-            test.loggerCheckEntries([]);
+            test.loggerCheckEntries([
+              'DEBUG - host (api.qiot.io) GET /1/m/THING : null',
+              'DEBUG - host output: No Authorization header found',
+              'DEBUG - host status: Unauthorized'
+            ]);
 
             done();
           });
@@ -83,14 +90,20 @@ describe('Command: mailbox',function() {
   });
 
   describe('when sending a mailbox message',function(){
-
     describe('when not account_token exists',function(){
       it('should report an error',function(done){
+        mockHTTP.statusCode = 401;
+        mockHTTP.dataToRead = 'No Authorization header found';
+
         mailbox('THING',JSON.stringify({action: 'test'}),function(result){
           test.safeAssertions(done,function(){
-            [result].should.eql(['no account_token found']);
+            [result].should.eql(['Unauthorized: No Authorization header found']);
 
-            test.loggerCheckEntries([]);
+            test.loggerCheckEntries([
+              'DEBUG - host (api.qiot.io) POST /1/m/THING : {"action":"test"}',
+              'DEBUG - host output: No Authorization header found',
+              'DEBUG - host status: Unauthorized'
+            ]);
 
             done();
           });

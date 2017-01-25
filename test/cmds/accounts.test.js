@@ -22,7 +22,7 @@ describe('Command: accounts',function() {
     mockHTTP.statusCode = 401;
     mockHTTP.dataToRead = 'No Authorization header found';
 
-    accounts({},function(result){
+    accounts(function(result){
       test.safeAssertions(done,function(){
 
         [result].should.eql(['Unauthorized: No Authorization header found']);
@@ -41,7 +41,7 @@ describe('Command: accounts',function() {
   it('should print accounts to console on success',function(done){
     mockHTTP.dataToRead = JSON.stringify({status: 'success',accounts: [{id: 1,name: 'test',token_identifier: 'ID',token_secret: 'SECRET',account_token: 'TOKEN',users: [{id: 123,email: 'test@test.com'}]}]});
 
-    accounts({},function(result){
+    accounts(function(result){
       test.safeAssertions(done,function(){
 
         [result].should.eql([null]);

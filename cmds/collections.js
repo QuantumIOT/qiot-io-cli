@@ -1,25 +1,3 @@
-var _ = require('lodash');
+var API = require('../lib/api');
 
-var CMD = require('../lib/cmd');
-var HOST = require('../lib/host');
-
-module.exports = function(){
-  var cmd = new CMD();
-  var host = new HOST(true);
-
-  var callback = cmd.ensureGoodCallback(arguments);
-
-  if (cmd.requireOptions(CMD.ACCOUNT_OPTION,callback)) return;
-
-  host.get('/users/accounts/' + cmd.options[CMD.ACCOUNT_OPTION] + '/collections').then(function(result){
-    cmd.safeguard(callback,function() {
-      if (result.statusCode !== HOST.allCodes.OK || !result.data.collections) return callback(HOST.describeResult(result));
-
-      cmd.dumpTable(['id', 'name', 'auth_token'], result.data.collections); // TODO - auth_token => collection_token
-
-      cmd.checkSaveClear(CMD.ACCOUNT_OPTION);
-
-      callback(null);
-    });
-  },callback);
-};
+module.exports = function(){ return API.executeDefn(arguments,API.findDefn({command: 'collections'})); };

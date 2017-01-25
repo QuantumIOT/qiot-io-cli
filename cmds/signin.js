@@ -1,9 +1,10 @@
 var regexEmail = require('regex-email');
 
 var CMD = require('../lib/cmd');
-var HOST = require('../lib/host');
+var API = require('../lib/api')
 
 module.exports = function(email,password){
+  var originalArgs = arguments;
 
   var cmd = new CMD();
 
@@ -22,17 +23,6 @@ module.exports = function(email,password){
   ];
 
   cmd.ensureOptions(specs).then(function(){
-    var host = new HOST();
-
-    host.post('/users/signin',{email: cmd.options.email,password: cmd.options.password}).then(function(result){
-      cmd.safeguard(callback,function() {
-        if (result.statusCode !== HOST.allCodes.OK || !result.data.token) return callback('unsuccessful signin: ' + HOST.describeResult(result));
-
-        cmd.establishUser(result.data.token);
-
-        callback(null);
-      });
-    },callback);
-
+    return API.executeDefn(originalArgs,API.findDefn({command: 'signin',required_options: ['email','password']}));
   },callback);
 };
