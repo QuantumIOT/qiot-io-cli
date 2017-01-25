@@ -5,7 +5,6 @@ var test = require('../test');
 var things = require(process.cwd() + '/cmds/things');
 
 var TEST_THING = {id: 1, label: 'LABEL', thing_token: 'THING', collection_token: 'COLLECTION', account_token: 'ACCOUNT', collection_id: 2, last_reported_at: 'DATE', identities: [{type: 'SN', value: 'TEST'}]};
-var THING_DUMP =
 
 describe('Command: things',function() {
   var config = null;
