@@ -21,7 +21,7 @@ describe('Command: messages',function() {
   it('should handle an HTTP error code',function(done){
     mockHTTP.statusCode = 403;
 
-    messages(null,function(result){
+    messages(null,{},function(result){
       test.safeAssertions(done,function(){
 
         [result].should.eql(['Forbidden']);
@@ -39,7 +39,7 @@ describe('Command: messages',function() {
   it('should print nothing if no messages are found',function(done){
     mockHTTP.dataToRead = JSON.stringify({status: 'success',messages: [],binaryMessages: []});
 
-    messages(null,function(result){
+    messages(null,{},function(result){
       test.safeAssertions(done,function(){
 
         [result].should.eql([null]);
@@ -60,7 +60,7 @@ describe('Command: messages',function() {
 
     commander.limit = 10;
 
-    messages('TOKEN',function(result){
+    messages('TOKEN',{},function(result){
       test.safeAssertions(done,function(){
 
         [result].should.eql([null]);
@@ -80,7 +80,7 @@ describe('Command: messages',function() {
     var testMessage = {accountToken: 'ACCOUNT-TOKEN',thingToken: 'THING-TOKEN',id: 'ID',message: {time: 'TIME'}};
     mockHTTP.dataToRead = JSON.stringify({status: 'success',messages: [testMessage],binaryMessages: [testMessage]});
 
-    messages(null,function(result){
+    messages(null,{},function(result){
       test.safeAssertions(done,function(){
 
         [result].should.eql([null]);
@@ -104,6 +104,17 @@ describe('Command: messages',function() {
         done();
       });
     });
+  });
+
+  it('should invoke a socket if the option is set and thing_token given',function(done){
+    var socket = function(service,event,data) {
+      [service,event,data].should.eql(['messages','thingToListen','THING']);
+      done();
+    };
+
+    test.mockery.registerMock('./socket',socket);
+
+    messages('THING',{socket: true});
   });
 
 });

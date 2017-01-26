@@ -1,23 +1,12 @@
-var _ = require('lodash');
-
-var CMD = require('../lib/cmd');
-var HOST = require('../lib/host');
+var API = require('../lib/api');
 
 module.exports = function(userid){
-  var cmd = new CMD();
-  var host = new HOST(true);
+  var pattern = {command: 'impersonate'};
 
-  var callback = cmd.ensureGoodCallback(arguments);
+  if (userid) {
+    require('commander').userid = userid;
+    pattern.required_options = ['userid'];
+  }
 
-  var endpoint = userid ? '/users/users/' + userid + '/impersonate' : '/users/users/reload';
-
-  host.put(endpoint).then(function(result){
-    cmd.safeguard(callback,function(){
-      if (result.statusCode !== HOST.allCodes.OK || !result.data.token) return callback('unsuccessful impersonation: ' + HOST.describeResult(result));
-
-      cmd.establishUser(result.data.token);
-
-      callback(null);
-    });
-  },callback);
+  return API.executeDefn(arguments,API.findDefn(pattern));
 };

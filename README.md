@@ -10,22 +10,20 @@ The `qiot-io-cli` allows an authorized user to access the APIs for any instance 
   Usage: qc [options] <command> ...
 
   Commands:
-
-
-  Commands:
-
-    init [options]                      initialize general configuration settings
-    signin|si [email] [password]        signin a local user with email and password
-    impersonate|i [userid]              impersonate a userid, or clear impersonation if none provided
-    whoami|?                            dump current user information
-    accounts|a                          list visible accounts
-    collections|c                       list collections for an account
-    things|t                            list things for an account or collection
-    users|u                             list users
-    messages|ms [thing_token]           list most recent messages
-    rest <method> <uri> [body]          make a REST api call
-    log|l <thing_token> <message>       log a message for a thing
-    mailbox|mb <thing_token> [message]  receive the mailbox entry for a thing without a message, send with one
+  
+    init [options]                       initialize general configuration settings
+    signin|si [email] [password]         signin a local user with email and password
+    impersonate|i [userid]               impersonate a userid, or clear impersonation if none provided
+    whoami|?                             dump current user information
+    accounts|a                           list visible accounts
+    collections|c                        list collections for an account
+    things|t [options]                   list things for an account or collection
+    users|u                              list users
+    messages|ms [options] [thing_token]  list most recent messages
+    rest <method> <uri> [body]           make a REST api call
+    log|l <thing_token> <message>        log a message for a thing
+    mailbox|mb <thing_token> [message]   receive the mailbox entry for a thing without a message, send with one
+    socket|io <service> <event> <data>   connect using socket.io to a service
 
   Options:
 
@@ -41,11 +39,12 @@ The `qiot-io-cli` allows an authorized user to access the APIs for any instance 
     --tsv                          output query results to TSV format
     --json                         output query results in JSON format
     --silent                       do not output query results
+    --debug                        turn on debugging for the current command
     --timestamps                   add timestamps to logs
     -v --verbose                   display maximal output
 ```
 
-Also, the `init` command has some special options:
+A few commands have command-specific options such as the following:
 
 ```
   Usage: init [options]
@@ -57,6 +56,28 @@ Also, the `init` command has some special options:
     -h, --help  output usage information
     --defaults  prompt with defaults instead of current settings
     --reset     reset settings to defaults
+```
+
+```
+  Usage: messages|ms [options] [thing_token]
+
+  list most recent messages
+
+  Options:
+
+    -h, --help  output usage information
+    --socket  message socket only available when a thing_token is given
+```
+
+```
+  Usage: things|t [options]
+
+  list things for an account or collection
+
+  Options:
+
+    -h, --help  output usage information
+    --socket  thing socket only available when an account is given
 ```
 
 ### Getting Started
@@ -99,7 +120,6 @@ Paste this as the `user_token` when prompted in the `qc init` command.
 
 * Support loading message bodies from the file system
 * Support centralized storage of multiple profiles
-* Support socket-io endpoints
 * More sophisticated support for FOTA/COTA
 
 ### How to contribute?

@@ -2,15 +2,22 @@ var _ = require('lodash');
 
 var CMD = require('../lib/cmd');
 var HOST = require('../lib/host');
+var API = require('../lib/api');
 
-module.exports = function(method,uri,body){
-
+module.exports = function(method,path,body){
   var cmd = new CMD();
-  var host = new HOST(true);
+
+  method = method.toUpperCase();
+  cmd.options.body = body;
+
+  var defn = findDefn(method,path,body);
+  if (defn) return API.executeDefn(arguments,defn);
+
+  var host = new HOST(HOST.AUTH_USER);
 
   var callback = cmd.ensureGoodCallback(arguments);
 
-  host.request({method: method, path: uri},cmd.helpers.safeParseJSON(body || null)).then(function(result){
+  host.request({method: method, path: path},body).then(function(result){
     cmd.safeguard(callback,function() {
       if (result.statusCode !== HOST.allCodes.OK) return callback(HOST.describeResult(result));
 
@@ -20,3 +27,13 @@ module.exports = function(method,uri,body){
     });
   },callback);
 };
+
+function findDefn(method,path,body){
+  return _.find(API.defns,function(entry){
+    return method === entry.method &&
+      new RegExp('^' + entry.path.replace(/{\w+}/g,'\\w+') + '$').test(path) &&
+      entry.body === !!body;
+  })
+}
+
+module.exports.findDefn = findDefn;

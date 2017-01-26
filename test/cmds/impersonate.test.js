@@ -71,7 +71,7 @@ describe('Command: impersonate',function() {
 
       impersonate(null,function(result){
         test.safeAssertions(done,function(){
-          [result].should.eql(['unsuccessful impersonation: Forbidden']);
+          [result].should.eql(['Forbidden']);
           test.loggerCheckEntries([
             'DEBUG - host (qiot.io) PUT /users/users/reload : null',
             'DEBUG - host status: Forbidden'
@@ -101,7 +101,7 @@ describe('Command: impersonate',function() {
 
       impersonate(1,function(result){
         test.safeAssertions(done,function(){
-          [result].should.eql(['unsuccessful impersonation: Forbidden']);
+          [result].should.eql(['Forbidden']);
           test.loggerCheckEntries([
             'DEBUG - host (qiot.io) PUT /users/users/1/impersonate : null',
             'DEBUG - host status: Forbidden'

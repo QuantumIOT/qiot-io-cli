@@ -5,7 +5,6 @@ var test = require('../test');
 var things = require(process.cwd() + '/cmds/things');
 
 var TEST_THING = {id: 1, label: 'LABEL', thing_token: 'THING', collection_token: 'COLLECTION', account_token: 'ACCOUNT', collection_id: 2, last_reported_at: 'DATE', identities: [{type: 'SN', value: 'TEST'}]};
-var THING_DUMP =
 
 describe('Command: things',function() {
   var config = null;
@@ -147,6 +146,17 @@ describe('Command: things',function() {
           done();
         })
       });
+    });
+
+    it('should invoke a socket if the option is set',function(done){
+      var socket = function(service,event,data) {
+        [service,event,data].should.eql(['users','listenAccountThingsChannel',1]);
+        done();
+      };
+
+      test.mockery.registerMock('./socket',socket);
+
+      things({socket: true});
     });
   }
 });

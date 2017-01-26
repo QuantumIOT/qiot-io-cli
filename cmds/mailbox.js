@@ -1,15 +1,16 @@
-var proxyutils = require('../lib/proxy-utils');
+var API = require('../lib/api');
 
 module.exports = function(thing_token,message){
-  if (message) return proxyutils.post(arguments,'/1/m/' + thing_token,message);
+  var commander = require('commander');
 
-  return proxyutils.request(arguments,{path: '/1/m/' + thing_token},null,function(cmd,result,callback){
-    cmd.safeguard(callback,function() {
-      if (result.statusCode !== proxyutils.HOST.allCodes.OK) return callback(proxyutils.HOST.describeResult(result));
+  commander.thing_token = thing_token;
 
-      cmd.dumpObject(result.data);
+  var pattern = {command: 'mailbox',required_options: ['thing_token']};
 
-      callback(null);
-    });
-  });
+  if (message) {
+    commander.body = message;
+    pattern.body = true;
+  }
+
+  return API.executeDefn(arguments,API.findDefn(pattern));
 };
