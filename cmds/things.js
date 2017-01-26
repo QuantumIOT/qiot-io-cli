@@ -1,10 +1,12 @@
 var _ = require('lodash');
 
-var CMD = require('../lib/cmd');
-var API = require('../lib/api');
+var CMD     = require('../lib/cmd');
+var API     = require('../lib/api');
 
-module.exports = function(){
+module.exports = function(options){
   var cmd = new CMD();
+
+  if (options.socket && cmd.bestOption(CMD.ACCOUNT_OPTION)) return require('./socket')('users','listenAccountThingsChannel',cmd.options.account);
 
   var collectionPattern = {command: 'things',required_options: [CMD.COLLECTION_OPTION]};
   var accountPattern    = {command: 'things',required_options: [CMD.ACCOUNT_OPTION]};

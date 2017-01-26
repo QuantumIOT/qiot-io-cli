@@ -147,5 +147,16 @@ describe('Command: things',function() {
         })
       });
     });
+
+    it('should invoke a socket if the option is set',function(done){
+      var socket = function(service,event,data) {
+        [service,event,data].should.eql(['users','listenAccountThingsChannel',1]);
+        done();
+      };
+
+      test.mockery.registerMock('./socket',socket);
+
+      things({socket: true});
+    });
   }
 });

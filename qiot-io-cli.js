@@ -21,6 +21,7 @@ commander
   .option('--tsv','output query results to TSV format')
   .option('--json','output query results in JSON format')
   .option('--silent','do not output query results')
+  .option('--debug','turn on debugging for this command')
   .option('--timestamps','add timestamps to logs')
   .option('-v --verbose','display maximal output');
 
@@ -65,6 +66,7 @@ commander
   .command('things')
   .description('list things for an account or collection')
   .alias('t')
+  .option('--socket','thing socket only available when an account is given')
   .action(require('./cmds/things'));
 
 commander
@@ -77,6 +79,7 @@ commander
   .command('messages [thing_token]')
   .description('list most recent messages')
   .alias('ms')
+  .option('--socket','message socket only available when a thing_token is given')
   .action(require('./cmds/messages'));
 
 commander

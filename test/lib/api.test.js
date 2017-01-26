@@ -1,3 +1,5 @@
+var _ = require('lodash');
+
 var test = require('../test');
 
 var API = require(process.cwd() + '/lib/api');
@@ -30,6 +32,37 @@ describe('API',function() {
           test.loggerCheckEntries([
             'DEBUG - host (qiot.io) GET /users : null',
             'DEBUG - host status: OK'
+          ]);
+          done();
+        });
+      });
+    });
+
+    it('will dump an object if no table fields defined',function(done){
+      var enclosure = function(){
+        var defn = _.clone(API.findDefn({command: 'users'}));
+        defn.table_fields = null;
+
+        API.executeDefn(arguments,defn);
+      };
+
+      mockHTTP.dataToRead = JSON.stringify({users: [{id: 'ID',name: 'NAME',email: 'EMAIL',account_id: 'ACCOUNT',role: {name: 'ROLE'},oauth_provider: 'github'}]});
+
+      enclosure(function(result){
+        test.safeAssertions(done,function(){
+          [result].should.eql([null]);
+          test.loggerCheckEntries([
+            'DEBUG - host (qiot.io) GET /users : null',
+            'DEBUG - host output: {"users":[{"id":"ID","name":"NAME","email":"EMAIL","account_id":"ACCOUNT","role":{"name":"ROLE"},"oauth_provider":"github"}]}',
+            'DEBUG - host status: OK',
+            [
+              ' 0.id               ID      \n',
+              ' 0.name             NAME    \n',
+              ' 0.email            EMAIL   \n',
+              ' 0.account_id       ACCOUNT \n',
+              ' 0.role.name        ROLE    \n',
+              ' 0.oauth_provider   github  \n'
+            ].join('')
           ]);
           done();
         });

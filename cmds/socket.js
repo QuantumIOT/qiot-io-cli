@@ -1,10 +1,11 @@
 var _ = require('lodash');
-var socketIO = require('socket.io-client');
-var wildcard = require('socketio-wildcard');
 
 var CMD = require('../lib/cmd');
 
 module.exports = function(service,event,data){
+  var socketIO = require('socket.io-client');
+  var wildcard = require('socketio-wildcard');
+
   var cmd = new CMD();
 
   var callback = cmd.ensureGoodCallback(arguments);
@@ -12,7 +13,7 @@ module.exports = function(service,event,data){
   var endpoint = 'https://' + cmd.config.settings.host_dns;// + '/' + service;
   var path = '/' + service + '/socket.io';
 
-  console.log(endpoint,path);
+  cmd.logger.debug(endpoint,path);
 
   var socket = socketIO(endpoint,{
     path: path,
@@ -28,21 +29,29 @@ module.exports = function(service,event,data){
     cmd.dumpObject({event: args.data[0],data: args.data[1]})
   });
 
-  socket.on('connect_error',cmd.logger.error);
-  socket.on('error',cmd.logger.error);
+  function logSocketEvent(socket,event,logFunction){
+    cmd.logger.debug('on',event);
 
-  socket.on('disconnect',cmd.logger.message);
+    socket.on(event,function(data){ logFunction(event,data); });
+  }
 
-  socket.on('reconnect',cmd.logger.message);
-  socket.on('reconnect_attempt',cmd.logger.message);
-  socket.on('reconnecting',cmd.logger.message);
-  socket.on('reconnect_failed',cmd.logger.message);
-  socket.on('reconnect_error',cmd.logger.message);
+  logSocketEvent(socket,'connect_error',cmd.logger.error);
+  logSocketEvent(socket,'error',cmd.logger.error);
 
-  socket.on('event',cmd.logger.message); // TODO does this work??
+  logSocketEvent(socket,'disconnect',cmd.logger.message);
+
+  logSocketEvent(socket,'reconnect',cmd.logger.message);
+  logSocketEvent(socket,'reconnect_attempt',cmd.logger.debug);
+  logSocketEvent(socket,'reconnecting',cmd.logger.debug);
+  logSocketEvent(socket,'reconnect_failed',cmd.logger.error);
+  logSocketEvent(socket,'reconnect_error',cmd.logger.error);
+
+  logSocketEvent(socket,'event',cmd.logger.message); // TODO does this work??
 
   socket.on('connect',function(){
-    cmd.logger.message('connected');
+    cmd.logger.message('connect');
+
+    cmd.logger.debug('emit(authentication,...)');
 
     socket.emit('authentication',{auth_token: cmd.config.settings.user_token});
 
@@ -52,7 +61,6 @@ module.exports = function(service,event,data){
       socket.emit(event,data);
     });
   });
-
 
   cmd.logger.message('waiting...');
 

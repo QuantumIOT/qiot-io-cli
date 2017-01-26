@@ -13,6 +13,17 @@ describe('CMD',function() {
 
   afterEach(test.standardAfterEach);
 
+  describe('on initialization',function(){
+    it('should set logger.debugging to true if options.debug is set',function(){
+      config.logger.debugging = false;
+      commander.debug = true;
+
+      new CMD();
+
+      config.logger.debugging.should.eql(true);
+    });
+  });
+
   describe('establishUser',function(){
     it('can handle an invalid token',function(){
       var cmd = new CMD();
