@@ -10,7 +10,7 @@ module.exports = function(method,path,body){
   method = method.toUpperCase();
   cmd.options.body = body;
 
-  var defn = findDefn(method,path,body);
+  var defn = findDefn(cmd.config.settings,method,path,body);
   if (defn) return API.executeDefn(arguments,defn);
 
   var host = new HOST(HOST.AUTH_USER);
@@ -28,10 +28,10 @@ module.exports = function(method,path,body){
   },callback);
 };
 
-function findDefn(method,path,body){
+function findDefn(settings,method,path,body){
   return _.find(API.defns,function(entry){
     return method === entry.method &&
-      new RegExp('^' + entry.path.replace(/{\w+}/g,'\\w+') + '$').test(path) &&
+      new RegExp('^' + API.adjustPath(entry,settings).replace(/{\w+}/g,'\\w+') + '$').test(path) &&
       entry.body === !!body;
   })
 }

@@ -10,8 +10,8 @@ module.exports = function(service,event,data){
 
   var callback = cmd.ensureGoodCallback(arguments);
 
-  var endpoint = 'https://' + cmd.config.settings.host_dns;// + '/' + service;
-  var path = '/' + service + '/socket.io';
+  var endpoint = cmd.config.settings.host_service + '://' + cmd.config.settings.host_dns + ':' + cmd.config.settings.host_port;
+  var path = (cmd.config.settings.users_prefix ? '/' + service : '') + '/socket.io';
 
   cmd.logger.debug(endpoint,path);
 
@@ -24,7 +24,7 @@ module.exports = function(service,event,data){
   patch(socket);
 
   socket.on('*', function(args){
-    if (!args || !args.type === 2 || !args.nsp === '/' || !_.isArray(args.data) || args.data.length !== 2) return cmd.logger.error('unexpected event',args);
+    if (!args || !args.type === 2 || !args.nsp === '/' || !_.isArray(args.data) || args.data.length < 2) return cmd.logger.error('unexpected event',args);
 
     cmd.dumpObject({event: args.data[0],data: args.data[1]})
   });

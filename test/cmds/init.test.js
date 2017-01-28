@@ -114,8 +114,11 @@ describe('Command: init',function() {
   describe('when there are settings that do not match defaults',function(){
     beforeEach(function(){
       config.settings.debug = true;
+      config.settings.host_service = 'http';
+      config.settings.host_port = 3000;
       config.settings.host_dns = 'ABC';
       config.settings.proxy_dns = 'XYZ';
+      config.settings.users_prefix = false;
       config.settings.account_token = '123';
       config.settings.user_token = '456';
       config.settings.current_account = '789';

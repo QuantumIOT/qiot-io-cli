@@ -79,29 +79,29 @@ describe('Command: rest',function() {
 
   describe('findDefn',function(){
     it('should match a simple API pattern',function(){
-      var defn = rest.findDefn('GET','/users',null);
+      var defn = rest.findDefn({},'GET','/users',null);
 
       (!!defn).should.eql(true);
       _.pick(defn,['method','path','body']).should.eql({method: 'GET',path: '/users',body: false});
     });
 
     it('should NOT match a simple API pattern with a different method',function(){
-      var defn = rest.findDefn('POST','/users',null);
+      var defn = rest.findDefn({},'POST','/users',null);
 
       (!defn).should.eql(true);
     });
 
     it('should NOT match a simple API pattern with a different body',function(){
-      var defn = rest.findDefn('GET','/users','body');
+      var defn = rest.findDefn({},'GET','/users','body');
 
       (!defn).should.eql(true);
     });
 
     it('should match a complex API pattern',function(){
-      var defn = rest.findDefn('PUT','/users/users/1/impersonate',null);
+      var defn = rest.findDefn({users_prefix: true},'PUT','/users/users/1/impersonate',null);
 
       (!!defn).should.eql(true);
-      _.pick(defn,['method','path','body']).should.eql({method: 'PUT',path: '/users/users/{userid}/impersonate',body: false});
+      _.pick(defn,['method','path','body','users_prefix']).should.eql({method: 'PUT',path: '/users/{userid}/impersonate',body: false,users_prefix: true});
     });
   });
 

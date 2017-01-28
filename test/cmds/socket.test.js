@@ -30,16 +30,48 @@ describe('Command: socket',function() {
   });
 
   afterEach(test.standardAfterEach);
+  
+  it('should allow localhost access',function(){
+    config.settings.host_service = 'http';
+    config.settings.host_dns     = 'localhost';
+    config.settings.host_port    = 3000;
+    config.settings.users_prefix = false;
+
+    socket('tservice','tevent','tdata');
+
+    socketStub.getCalls().length.should.eql(1);
+    socketStub.getCall(0).args.should.eql(['http://localhost:3000',{path: '/socket.io',timeout: 500}]);
+
+    mockSocket.eventsEmitted.should.eql([]);
+    test.loggerCheckEntries([
+      'DEBUG - http://localhost:3000: /socket.io',
+      'DEBUG - on: connect_error',
+      'DEBUG - on: error',
+      'DEBUG - on: disconnect',
+      'DEBUG - on: reconnect',
+      'DEBUG - on: reconnect_attempt',
+      'DEBUG - on: reconnecting',
+      'DEBUG - on: reconnect_failed',
+      'DEBUG - on: reconnect_error',
+      'DEBUG - on: event',
+      'waiting...'
+    ]);
+
+    config.settings.host_service = config.defaults.host_service;
+    config.settings.host_dns     = config.defaults.host_dns;
+    config.settings.host_port    = config.defaults.host_port;
+    config.settings.users_prefix = config.defaults.users_prefix;
+  });
 
   it('should connect, authenticate, and receive events',function(){
     socket('tservice','tevent','tdata');
 
     socketStub.getCalls().length.should.eql(1);
-    socketStub.getCall(0).args.should.eql(['https://qiot.io',{path: '/tservice/socket.io',timeout: 500}]);
+    socketStub.getCall(0).args.should.eql(['https://qiot.io:443',{path: '/tservice/socket.io',timeout: 500}]);
 
     mockSocket.eventsEmitted.should.eql([]);
     test.loggerCheckEntries([
-      'DEBUG - https://qiot.io: /tservice/socket.io',
+      'DEBUG - https://qiot.io:443: /tservice/socket.io',
       'DEBUG - on: connect_error',
       'DEBUG - on: error',
       'DEBUG - on: disconnect',
