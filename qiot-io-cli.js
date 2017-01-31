@@ -83,7 +83,7 @@ commander
   .action(require('./cmds/messages'));
 
 commander
-  .command('rest <method> <uri> [body]')
+  .command('rest <method> <path> [body]')
   .description('make a REST api call')
   .action(require('./cmds/rest'));
 
@@ -104,6 +104,12 @@ commander
   .description('connect using socket.io to a service')
   .alias('io')
   .action(require('./cmds/socket'));
+
+commander
+  .command('mqtt <thing_token>')
+  .description('connect using an MQTT client for a thing')
+  .alias('mq')
+  .action(require('./cmds/mqtt'));
 
 commander
   .action(function(env){

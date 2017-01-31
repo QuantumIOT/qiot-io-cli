@@ -29,37 +29,29 @@ module.exports = function(service,event,data){
     cmd.dumpObject({event: args.data[0],data: args.data[1]})
   });
 
-  function logSocketEvent(socket,event,logFunction){
-    cmd.logger.debug('on',event);
+  function logEvent(event,logFunction){ socket.on(event,function(data){ logFunction(event,data); }); }
 
-    socket.on(event,function(data){ logFunction(event,data); });
-  }
+  logEvent('connect_error',     cmd.logger.error);
+  logEvent('error',             cmd.logger.error);
+  logEvent('disconnect',        cmd.logger.message);
+  logEvent('reconnect',         cmd.logger.message);
+  logEvent('reconnect_attempt', cmd.logger.debug);
+  logEvent('reconnecting',      cmd.logger.debug);
+  logEvent('reconnect_failed',  cmd.logger.error);
+  logEvent('reconnect_error',   cmd.logger.error);
+  logEvent('event',             cmd.logger.message); // TODO does this work??
 
-  logSocketEvent(socket,'connect_error',cmd.logger.error);
-  logSocketEvent(socket,'error',cmd.logger.error);
+  socket.on('authenticated',function(){
+    cmd.logger.debug(function(){ return 'emit(' + event + ',' + data + ')';});
 
-  logSocketEvent(socket,'disconnect',cmd.logger.message);
-
-  logSocketEvent(socket,'reconnect',cmd.logger.message);
-  logSocketEvent(socket,'reconnect_attempt',cmd.logger.debug);
-  logSocketEvent(socket,'reconnecting',cmd.logger.debug);
-  logSocketEvent(socket,'reconnect_failed',cmd.logger.error);
-  logSocketEvent(socket,'reconnect_error',cmd.logger.error);
-
-  logSocketEvent(socket,'event',cmd.logger.message); // TODO does this work??
+    socket.emit(event,data);
+  });
 
   socket.on('connect',function(){
     cmd.logger.message('connect');
-
     cmd.logger.debug('emit(authentication,...)');
 
     socket.emit('authentication',{auth_token: cmd.config.settings.user_token});
-
-    socket.on('authenticated',function(){
-      cmd.logger.debug(function(){ return 'emit(' + event + ',' + data + ')';});
-
-      socket.emit(event,data);
-    });
   });
 
   cmd.logger.message('waiting...');
