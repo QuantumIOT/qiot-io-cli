@@ -128,6 +128,7 @@ Paste this as the `user_token` when prompted in the `qc init` command.
 * Support loading message bodies from the file system
 * Support centralized storage of multiple profiles
 * Support more/all REST actions of the API (e.g., PUT (more), PATCH, DELETE)
+* Enhance FOTA support
 
 ### How to contribute?
 
