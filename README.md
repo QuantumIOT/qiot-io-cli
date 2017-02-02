@@ -93,7 +93,7 @@ A few commands have command-specific options such as the following:
 You can install globally as follows:
 
 ```
-npm install @qiot/qiot-io-cli -g
+npm install qiot-io-cli -g
 ```
 
 ##### Configure
