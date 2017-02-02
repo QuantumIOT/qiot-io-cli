@@ -100,6 +100,11 @@ commander
   .action(require('./cmds/mailbox'));
 
 commander
+  .command('fota <thing_token> <url> <filesize> <checksum>')
+  .description('send an appropriately formatted FOTA mailbox message to the thing (experimental)')
+  .action(require('./cmds/fota'));
+
+commander
   .command('socket <service> <event> <data>')
   .description('connect using socket.io to a service')
   .alias('io')

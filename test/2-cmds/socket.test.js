@@ -45,15 +45,6 @@ describe('Command: socket',function() {
     mockSocket.eventsEmitted.should.eql([]);
     test.loggerCheckEntries([
       'DEBUG - http://localhost:3000: /socket.io',
-      'DEBUG - on: connect_error',
-      'DEBUG - on: error',
-      'DEBUG - on: disconnect',
-      'DEBUG - on: reconnect',
-      'DEBUG - on: reconnect_attempt',
-      'DEBUG - on: reconnecting',
-      'DEBUG - on: reconnect_failed',
-      'DEBUG - on: reconnect_error',
-      'DEBUG - on: event',
       'waiting...'
     ]);
 
@@ -72,15 +63,6 @@ describe('Command: socket',function() {
     mockSocket.eventsEmitted.should.eql([]);
     test.loggerCheckEntries([
       'DEBUG - https://qiot.io:443: /tservice/socket.io',
-      'DEBUG - on: connect_error',
-      'DEBUG - on: error',
-      'DEBUG - on: disconnect',
-      'DEBUG - on: reconnect',
-      'DEBUG - on: reconnect_attempt',
-      'DEBUG - on: reconnecting',
-      'DEBUG - on: reconnect_failed',
-      'DEBUG - on: reconnect_error',
-      'DEBUG - on: event',
       'waiting...'
     ]);
 

@@ -118,6 +118,7 @@ describe('Command: init',function() {
       config.settings.host_port = 3000;
       config.settings.host_dns = 'ABC';
       config.settings.proxy_dns = 'XYZ';
+      config.settings.mqtt_port = 3000;
       config.settings.users_prefix = false;
       config.settings.account_token = '123';
       config.settings.user_token = '456';

@@ -156,17 +156,20 @@ var MockHTTP = function(){
   self.dataWritten = [];
   self.dataToRead = null;
   self.statusCode = 200;
+  self.callbackOnEnd = null;
 };
 
 MockHTTP.prototype.on = function(event,callback){
   var self = this;
 
   self.eventCallbacks[event] = callback;
-  if (event == 'end')
+  if (event == 'end') {
+    self.callbackOnEnd && self.callbackOnEnd();
     _.defer(function(){
       _.each(_.concat([],self.dataToRead || []),self.eventCallbacks.data);
       self.eventCallbacks.end(null);
     });
+  }
 
   return self;
 };
