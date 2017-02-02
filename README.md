@@ -1,4 +1,4 @@
-# qiot-io-cli [![Build Status](https://circleci.com/gh/QuantumIOT/qiot-io-cli/tree/master.svg?style=shield&circle-token=431c98e778c22a698cdb6e5aa88b897ba1e95796)](https://circleci.com/gh/QuantumIOT/qiot-io-cli) [![Build Status](https://travis-ci.org/QuantumIOT/qiot-io-cli.svg?branch=master)](https://travis-ci.org/QuantumIOT/qiot-io-cli) [![Coverage Status](https://coveralls.io/repos/github/QuantumIOT/qiot-io-cli/badge.svg?branch=master)](https://coveralls.io/github/QuantumIOT/qiot-io-cli?branch=master)
+# qiot-io-cli [![Build Status](https://travis-ci.org/QuantumIOT/qiot-io-cli.svg?branch=master)](https://travis-ci.org/QuantumIOT/qiot-io-cli) [![Coverage Status](https://coveralls.io/repos/github/QuantumIOT/qiot-io-cli/badge.svg?branch=master)](https://coveralls.io/github/QuantumIOT/qiot-io-cli?branch=master)
 
 
 
