@@ -7,11 +7,12 @@
     "qc": "bin/qc"
   },
   "scripts": {
-    "test": "nyc mocha --recursive"
+    "test": "nyc mocha --recursive",
+    "coveralls": "istanbul cover ./node_modules/mocha/bin/_mocha -x **test.js --report lcovonly -- -R spec test --recursive && cat ./coverage/lcov.info | ./node_modules/coveralls/bin/coveralls.js"
   },
   "repository": {
     "type": "git",
-    "url": "git://github.com/QuantumIOT/qiot-io-cli.git"
+    "url": "https://github.com/quantumiot/qiot-io-cli.git"
   },
   "keywords": [
     "qiot",
@@ -52,6 +53,7 @@
   },
   "devDependencies": {
     "chai": "^3.5.0",
+    "coveralls": "^2.11.15",
     "mocha": "^3.2.0",
     "mockery": "^2.0.0",
     "nyc": "^10.0.0",
