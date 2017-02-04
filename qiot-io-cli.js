@@ -100,7 +100,7 @@ commander
   .action(require('./cmds/mailbox'));
 
 commander
-  .command('fota <thing_token> <url> <filesize> <checksum>')
+  .command('fota <thing_token> <url>')
   .description('send an appropriately formatted FOTA mailbox message to the thing (experimental)')
   .action(require('./cmds/fota'));
 

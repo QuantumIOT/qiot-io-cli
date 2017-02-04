@@ -19,7 +19,7 @@ describe('HOST',function() {
     it('receives multiple data chunks',function(done){
       mockHTTP.dataToRead = ['{"action":','"test"}'];
 
-      host.request({path: '/test'},null).then(function(result){
+      host.request({path: '/test'},null).catch(done).then(function(result){
         result.data.should.eql({action: 'test'});
         
         test.loggerCheckEntries([
@@ -30,7 +30,7 @@ describe('HOST',function() {
         ]);
         
         done();
-      },done)
+      })
     });
 
     it('handles an initial error',function(done){

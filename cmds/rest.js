@@ -17,7 +17,7 @@ module.exports = function(method,path,body){
 
   var callback = cmd.ensureGoodCallback(arguments);
 
-  host.request({method: method, path: path},body).then(function(result){
+  host.request({method: method, path: path},body).catch(callback).then(function(result){
     cmd.safeguard(callback,function() {
       if (result.statusCode !== HOST.allCodes.OK) return callback(HOST.describeResult(result));
 
@@ -25,7 +25,7 @@ module.exports = function(method,path,body){
 
       callback(null);
     });
-  },callback);
+  });
 };
 
 function findDefn(settings,method,path,body){

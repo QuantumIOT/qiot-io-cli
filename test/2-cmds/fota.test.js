@@ -5,28 +5,25 @@ var test = require('../test');
 var fota = require(process.cwd() + '/cmds/fota');
 
 describe('Command: fota',function() {
-  var config = null;
-  var mockHTTP = null;
-  var commander = null;
+  var config, mockHTTPS, mockHTTP, commander;
 
   beforeEach(function () {
     config = test.standardBeforeEach(['prompt']);
 
-    test.mockery.registerMock('https',mockHTTP = new test.MockHTTP());
+    test.mockery.registerMock('http',mockHTTP = new test.MockHTTP());
+    test.mockery.registerMock('https',mockHTTPS = new test.MockHTTP());
     test.mockery.registerMock('commander',commander = {raw: true});
   });
 
   afterEach(test.standardAfterEach);
 
   var thing_token = 'THING';
-  var url = 'http://skip-path/test.bin';
-  var filesize = 1;
-  var checksum = 2;
-  var messageJSON = JSON.stringify({actions: [{version: 'test',filesize: filesize,checksum: checksum,url: url}]});
+  var url = 'http://domain/folder/test.bin';
+  var messageJSON = JSON.stringify({actions: [{version: 'test',filesize: 123,checksum: 123,url: url}]});
 
   describe('when an invalid url is given',function(){
     it('should record an error',function(done){
-      fota(thing_token,'abc',filesize,checksum,function(result){
+      fota(thing_token,'abc',function(result){
         test.safeAssertions(done,function(){
           [result].should.eql(['invalid url: abc']);
 
@@ -38,13 +35,43 @@ describe('Command: fota',function() {
     });
   });
 
+  describe('when an bin-related files are not found',function(){
+    it('should record an error',function(done){
+      mockHTTP.statusCode = 404;
+
+      fota(thing_token,url,function(result){
+        test.safeAssertions(done,function(){
+          [result].should.eql(['Not Found']);
+
+          test.loggerCheckEntries([
+            'DEBUG - filesize: /folder/test.filesize'
+          ]);
+
+          done();
+        });
+      });
+    });
+  });
+
   describe('when an invalid filesize is given',function(){
     it('should record an error',function(done){
-      fota(thing_token,url,'abc',checksum,function(result){
+      mockHTTP.callbackOnEnd = function(){
+        mockHTTP.dataToRead = 'abc';
+        mockHTTP.callbackOnEnd = function(){
+          mockHTTP.dataToRead = '123';
+        };
+      };
+
+      fota(thing_token,url,function(result){
         test.safeAssertions(done,function(){
           [result].should.eql(['invalid filesize: abc']);
 
-          test.loggerCheckEntries();
+          test.loggerCheckEntries([
+            'DEBUG - filesize: /folder/test.filesize',
+            'DEBUG - filesize: abc',
+            'DEBUG - checksum: /folder/test.checksum',
+            'DEBUG - checksum: 123'
+          ]);
 
           done();
         });
@@ -54,11 +81,24 @@ describe('Command: fota',function() {
 
   describe('when an invalid checksum is given',function(){
     it('should record an error',function(done){
-      fota(thing_token,url,filesize,'abc',function(result){
+      mockHTTP.callbackOnEnd = function(){
+        mockHTTP.dataToRead = '123';
+        mockHTTP.callbackOnEnd = function(){
+          mockHTTP.dataToRead = 'abc';
+        };
+      };
+
+      fota(thing_token,url,function(result){
         test.safeAssertions(done,function(){
           [result].should.eql(['invalid checksum: abc']);
 
-          test.loggerCheckEntries();
+
+          test.loggerCheckEntries([
+            'DEBUG - filesize: /folder/test.filesize',
+            'DEBUG - filesize: 123',
+            'DEBUG - checksum: /folder/test.checksum',
+            'DEBUG - checksum: abc'
+          ]);
 
           done();
         });
@@ -68,6 +108,8 @@ describe('Command: fota',function() {
 
   describe('when valid arguments are given',function(){
     beforeEach(function(){
+      mockHTTP.dataToRead = '123';
+
       config.settings.account_token = 'ACCOUNT-TOKEN';
     });
 
@@ -76,14 +118,18 @@ describe('Command: fota',function() {
     });
 
     it('should handle an HTTP error code when unauthorized',function(done){
-      mockHTTP.statusCode = 401;
-      mockHTTP.dataToRead = 'No Authorization header found';
+      mockHTTPS.statusCode = 401;
+      mockHTTPS.dataToRead = 'No Authorization header found';
 
-      fota(thing_token,url,filesize,checksum,function(result){
+      fota(thing_token,url,function(result){
         test.safeAssertions(done,function(){
           [result].should.eql(['Unauthorized: No Authorization header found']);
 
           test.loggerCheckEntries([
+            'DEBUG - filesize: /folder/test.filesize',
+            'DEBUG - filesize: 123',
+            'DEBUG - checksum: /folder/test.checksum',
+            'DEBUG - checksum: 123',
             'DEBUG - host (api.qiot.io) POST /1/m/THING : ' + messageJSON,
             'DEBUG - host output: No Authorization header found',
             'DEBUG - host status: Unauthorized'
@@ -95,29 +141,33 @@ describe('Command: fota',function() {
     });
 
     it('should successfully deliver a fota message and echo it',function(done){
-      mockHTTP.callbackOnEnd = function(){
-        mockHTTP.statusCode = 204;
-        mockHTTP.callbackOnEnd = function(){
-          mockHTTP.statusCode = 200;
-          mockHTTP.dataToRead = messageJSON;
+      mockHTTPS.callbackOnEnd = function(){
+        mockHTTPS.statusCode = 204;
+        mockHTTPS.callbackOnEnd = function(){
+          mockHTTPS.statusCode = 200;
+          mockHTTPS.dataToRead = messageJSON;
         };
       };
 
-      fota(thing_token,url,filesize,checksum,function(result){
+      fota(thing_token,url,function(result){
         test.safeAssertions(done,function(){
           [result].should.eql([null]);
 
           test.loggerCheckEntries([
+            'DEBUG - filesize: /folder/test.filesize',
+            'DEBUG - filesize: 123',
+            'DEBUG - checksum: /folder/test.checksum',
+            'DEBUG - checksum: 123',
             'DEBUG - host (api.qiot.io) POST /1/m/THING : ' + messageJSON,
             'DEBUG - host status: No Content',
             'DEBUG - host (api.qiot.io) GET /1/m/THING : null',
             'DEBUG - host output: ' + messageJSON,
             'DEBUG - host status: OK',
             [
-              ' actions.0.version    test                      \n',
-              ' actions.0.filesize   1                         \n',
-              ' actions.0.checksum   2                         \n',
-              ' actions.0.url        http://skip-path/test.bin \n'
+              ' actions.0.version    test                          \n',
+              ' actions.0.filesize   123                           \n',
+              ' actions.0.checksum   123                           \n',
+              ' actions.0.url        http://domain/folder/test.bin \n'
             ].join('')
           ]);
 
