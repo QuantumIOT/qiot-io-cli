@@ -8,7 +8,7 @@ describe('Command: fota',function() {
   var config, mockHTTPS, mockHTTP, commander;
 
   beforeEach(function () {
-    config = test.standardBeforeEach(['prompt']);
+    config = test.standardBeforeEach();
 
     test.mockery.registerMock('http',mockHTTP = new test.MockHTTP());
     test.mockery.registerMock('https',mockHTTPS = new test.MockHTTP());

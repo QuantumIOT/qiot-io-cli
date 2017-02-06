@@ -10,7 +10,7 @@ describe('Command: init',function() {
   var promptStub = null;
 
   beforeEach(function () {
-    config = test.standardBeforeEach(['prompt','commander']);
+    config = test.standardBeforeEach(['commander']);
 
     promptStub = test.sinon.stub(prompt,'get');
   });

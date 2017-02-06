@@ -10,7 +10,7 @@ describe('Command: impersonate',function() {
   var mockHTTP = null;
 
   beforeEach(function () {
-    config = test.standardBeforeEach(['prompt']);
+    config = test.standardBeforeEach();
 
     test.mockery.registerMock('commander',commander = {raw: true});
     test.mockery.registerMock('https',mockHTTP = new test.MockHTTP());

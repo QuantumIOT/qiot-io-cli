@@ -10,7 +10,7 @@ describe('Command: whoami',function() {
   var commander = null;
 
   beforeEach(function () {
-    config = test.standardBeforeEach(['prompt']);
+    config = test.standardBeforeEach();
     test.mockery.registerMock('commander',commander = {raw: true});
   });
 

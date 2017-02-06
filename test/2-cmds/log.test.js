@@ -8,7 +8,7 @@ describe('Command: log',function() {
   var config,commander,mockHTTP;
 
   beforeEach(function () {
-    config = test.standardBeforeEach(['commander','prompt']);
+    config = test.standardBeforeEach();
 
     test.mockery.registerMock('commander',commander = {raw: true});
     test.mockery.registerMock('https',mockHTTP = new test.MockHTTP());

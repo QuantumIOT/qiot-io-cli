@@ -9,7 +9,7 @@ describe('Command: mqtt',function() {
   var config,commander,mqttStub,clientStub;
 
   beforeEach(function () {
-    config = test.standardBeforeEach(['prompt']);
+    config = test.standardBeforeEach();
     test.mockery.registerMock('commander',commander = {raw: true});
     test.mockery.registerMock('mqtt',mqttStub = {});
 

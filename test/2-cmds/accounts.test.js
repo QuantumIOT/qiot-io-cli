@@ -10,7 +10,7 @@ describe('Command: accounts',function() {
   var commander = null;
 
   beforeEach(function () {
-    config = test.standardBeforeEach(['prompt']);
+    config = test.standardBeforeEach();
 
     test.mockery.registerMock('https',mockHTTP = new test.MockHTTP());
     test.mockery.registerMock('commander',commander = {raw: true});

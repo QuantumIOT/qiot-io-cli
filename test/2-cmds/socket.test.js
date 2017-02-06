@@ -8,7 +8,7 @@ describe('Command: socket',function() {
   var config,commander,socketStub,wildcardStub,mockSocket;
 
   beforeEach(function () {
-    config = test.standardBeforeEach(['prompt']);
+    config = test.standardBeforeEach();
     test.mockery.registerMock('commander',commander = {raw: true});
     test.mockery.registerMock('socket.io-client',socketStub = test.sinon.stub());
     test.mockery.registerMock('socketio-wildcard',wildcardStub = test.sinon.stub());

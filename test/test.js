@@ -29,7 +29,7 @@ test.deferAssertions = function(done,callback){
 test.standardBeforeEach = function(allowed){
   test.mockery.enable();
   test.mockery.warnOnReplace(false);
-  test.mockery.registerAllowables(_.concat(allowed || [],['lodash','./config','./logger',test.configGuard.requirePath]));
+  test.mockery.registerAllowables(_.concat(allowed || [],['lodash','./config','./logger','prompt',test.configGuard.requirePath]));
   test.loggerBeforeEach();
   test.mockery.registerMock('./helpers',test.mockHelpers);
   test.mockHelpers.resetMock();

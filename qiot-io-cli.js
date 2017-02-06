@@ -88,6 +88,13 @@ commander
   .action(require('./cmds/rest'));
 
 commander
+  .command('register <identity>')
+  .description('register a thing with an identity in the form of [<type>:]<value>[,[<type>:]<value>...]')
+  .alias('r')
+  .option('--label <label>','provide a label for a thing (otherwise it is the first identity')
+  .action(require('./cmds/register'));
+
+commander
   .command('log <thing_token> <message>')
   .description('log a message for a thing')
   .alias('l')
