@@ -1,14 +1,15 @@
 var API = require('../lib/api');
+var CMD = require('../lib/cmd');
 
-module.exports = function(thing_token,message){
-  var commander = require('commander');
+module.exports = function(thingToken,message){
+  var cmd = new CMD();
 
-  commander.thing_token = thing_token;
+  cmd.options.thing_token = cmd.bestThingToken(thingToken);
 
   var pattern = {command: 'mailbox',required_options: ['thing_token']};
 
   if (message) {
-    commander.body = message;
+    cmd.options.body = message;
     pattern.body = true;
   }
 

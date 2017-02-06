@@ -2,10 +2,12 @@ var _ = require('lodash');
 
 var CMD = require('../lib/cmd');
 
-module.exports = function(thing_token){
+module.exports = function(thingToken){
   var mqtt = require('mqtt');
 
   var cmd = new CMD();
+
+  thingToken = cmd.bestThingToken(thingToken);
 
   var callback = cmd.ensureGoodCallback(arguments);
   
@@ -17,7 +19,7 @@ module.exports = function(thing_token){
   var client = mqtt.connect({
     host:       cmd.config.settings.proxy_dns,
     port:       cmd.config.settings.mqtt_port,
-    clientId:   thing_token,
+    clientId:   thingToken,
     username:   credentials[0],
     password:   credentials[1],
     keepalive:  60,
@@ -37,7 +39,7 @@ module.exports = function(thing_token){
     _.defer(command);
   });
 
-  client.subscribe('1/m/' + thing_token,{qos: 0},function(err,granted){
+  client.subscribe('1/m/' + thingToken,{qos: 0},function(err,granted){
     cmd.logger.message('subscribe: ' + JSON.stringify(err) + ':' + JSON.stringify(granted));
     cmd.logger.consoleLOG();
   });
@@ -58,7 +60,7 @@ module.exports = function(thing_token){
       if (!dataCheck)
         _.defer(command);
       else {
-        client.publish('/1/l/' + thing_token,JSON.stringify({messages: _.concat([],dataCheck)}),{qos: 0,retain: true},function(err) {
+        client.publish('/1/l/' + thingToken,JSON.stringify({messages: _.concat([],dataCheck)}),{qos: 0,retain: true},function(err) {
           if (err)
             cmd.logger.error(err);
           else

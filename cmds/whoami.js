@@ -13,9 +13,10 @@ module.exports = function(){
   else
     cmd.logger.error('no user token');
   
-  object.current_user = cmd.config.settings.current_user;
-  object.current_account = cmd.config.settings.current_account;
+  object.current_user       = cmd.config.settings.current_user;
+  object.current_account    = cmd.config.settings.current_account;
   object.current_collection = cmd.config.settings.current_collection;
+  object.current_thing      = cmd.config.settings.current_thing;
   cmd.dumpObject(object);
 
   callback(null);

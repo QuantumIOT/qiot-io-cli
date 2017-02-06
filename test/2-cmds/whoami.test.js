@@ -24,7 +24,8 @@ describe('Command: whoami',function() {
           [
             ' current_user                   \n',
             ' current_account                \n',
-            ' current_collection             \n'
+            ' current_collection             \n',
+            ' current_thing                  \n'
           ].join('')
         ]);
         done();
@@ -48,7 +49,8 @@ describe('Command: whoami',function() {
           [
             ' current_user                   \n',
             ' current_account                \n',
-            ' current_collection             \n'
+            ' current_collection             \n',
+            ' current_thing                  \n'
           ].join('')
         ]);
         done();
@@ -85,7 +87,8 @@ describe('Command: whoami',function() {
         ' exp                  1485615532                \n',
         ' current_user                                   \n',
         ' current_account                                \n',
-        ' current_collection                             \n'
+        ' current_collection                             \n',
+        ' current_thing                                  \n'
       ].join('')]);
     })
   });

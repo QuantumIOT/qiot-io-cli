@@ -24,7 +24,7 @@ describe('CMD',function() {
     });
   });
 
-  describe('establishUser',function(){
+  describe('#establishUser',function(){
     it('can handle an invalid token',function(){
       var cmd = new CMD();
 
@@ -44,7 +44,7 @@ describe('CMD',function() {
     });
   });
 
-  describe('dumpObject',function(){
+  describe('#dumpObject',function(){
     var object = {a: 1, b: 2, c: 3, d: 4};
 
     it('should display all the key-value pairs',function(){
@@ -130,7 +130,7 @@ describe('CMD',function() {
     });
   });
 
-  describe('dumpTable',function(){
+  describe('#dumpTable',function(){
     var fields = ['a','d'];
     var objects = [{a: 1, b: 2, c: 3, d: 4}];
 
@@ -258,7 +258,7 @@ describe('CMD',function() {
     });
   });
 
-  describe('checkSaveClear',function(){
+  describe('#checkSaveClear',function(){
     var key,current_key,oldSettings;
 
     beforeEach(function(){
@@ -327,7 +327,7 @@ describe('CMD',function() {
     });
   });
 
-  describe('outputCSV',function(){
+  describe('#outputCSV',function(){
     var testFunction = 'outputCSV';
 
     it('handles no rows',function(){
@@ -387,7 +387,7 @@ describe('CMD',function() {
     })
   });
 
-  describe('outputTSV',function(){
+  describe('#outputTSV',function(){
     var testFunction = 'outputTSV';
 
     it('handles no rows',function(){
@@ -446,7 +446,31 @@ describe('CMD',function() {
     })
   });
 
-  describe('safeguard',function(){
+  describe('#bestThingToken',function(){
+    it('should return the given token if not @',function(){
+      var cmd = new CMD();
+
+      cmd.bestThingToken('THING').should.eql('THING');
+    });
+
+    it('should return @ if no current_thing defined',function(){
+      var cmd = new CMD();
+
+      cmd.bestThingToken('@').should.eql('@');
+    });
+
+    it('should return current_thing if given @',function(){
+      var cmd = new CMD();
+
+      cmd.config.settings.current_thing = 'THING';
+
+      cmd.bestThingToken('@').should.eql('THING');
+
+      delete cmd.config.settings.current_thing;
+    });
+  });
+
+  describe('#safeguard',function(){
     it('should catch an error',function(){
       var error = new Error();
       var cmd = new CMD();
