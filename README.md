@@ -22,6 +22,7 @@ The `qiot-io-cli` allows an authorized user to access the APIs for any instance 
     users|u                              list users
     messages|ms [options] [thing_token]  list most recent messages
     rest <method> <path> [body]          make a REST api call
+    register|r [options] <identity>      register a thing with an identity in the form of [<type>:]<value>[,[<type>:]<value>...]
     log|l <thing_token> <message>        log a message for a thing
     mailbox|mb <thing_token> [message]   receive the mailbox entry for a thing without a message, send with one
     fota <thing_token> <url>             send an appropriately formatted FOTA mailbox message to the thing (experimental)
@@ -45,7 +46,13 @@ The `qiot-io-cli` allows an authorized user to access the APIs for any instance 
     --debug                        turn on debugging for this command
     --timestamps                   add timestamps to logs
     -v --verbose                   display maximal output
+
+
 ```
+
+One special note: Anywhere that a "thing_token" is specified as a command line argument,
+you may use the special symbol `@` to represent a "current thing" stored in the configuration file.
+This "current thing" can be captured automatically with the `qc register` command and the `--save` option.
 
 A few commands have command-specific options such as the following:
 
@@ -71,8 +78,10 @@ A few commands have command-specific options such as the following:
 
   Options:
 
-    -h, --help  output usage information
-    --socket  message socket only available when a thing_token is given
+    -h, --help         output usage information
+    --socket           message socket only available when a thing_token is given
+    --from <datetime>  return messages after the given datetime
+    --to <datetime>    return messages before the given datetime
 ```
 
 ##### things
@@ -128,7 +137,6 @@ Paste this as the `user_token` when prompted in the `qc init` command.
 * Support loading message bodies from the file system
 * Support centralized storage of multiple profiles
 * Support more/all REST actions of the API (e.g., PUT (more), PATCH, DELETE)
-* Enhance FOTA support
 
 ### How to contribute?
 

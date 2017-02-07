@@ -80,6 +80,8 @@ commander
   .description('list most recent messages')
   .alias('ms')
   .option('--socket','message socket only available when a thing_token is given')
+  .option('--from <datetime>','return messages after the given datetime')
+  .option('--to <datetime>','return messages before the given datetime')
   .action(require('./cmds/messages'));
 
 commander

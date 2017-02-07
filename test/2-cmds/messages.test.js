@@ -55,18 +55,18 @@ describe('Command: messages',function() {
     });
   });
 
-  it('should accept optional thingToken and limit options',function(done){
+  it('should accept optional options',function(done){
     mockHTTP.dataToRead = JSON.stringify({status: 'success',messages: [],binaryMessages: []});
 
     commander.limit = 10;
 
-    messages('TOKEN',{},function(result){
+    messages('TOKEN',{from: 'FROM',to: 'TO'},function(result){
       test.safeAssertions(done,function(){
 
         [result].should.eql([null]);
 
         test.loggerCheckEntries([
-          'DEBUG - host (qiot.io) GET /messages?thing_token=TOKEN&limit=10 : null',
+          'DEBUG - host (qiot.io) GET /messages?thing_token=TOKEN&limit=10&time_from=FROM&time_to=TO : null',
           'DEBUG - host output: {"status":"success","messages":[],"binaryMessages":[]}',
           'DEBUG - host status: OK'
         ]);

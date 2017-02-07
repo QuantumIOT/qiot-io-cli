@@ -4,7 +4,7 @@ var API = require('../lib/api');
 var CMD = require('../lib/cmd');
 var HOST = require('../lib/host');
 
-module.exports = function(thing_token,url,filesize,checksum){
+module.exports = function(thingToken,url,filesize,checksum){
   var originalArguments = arguments;
 
   var cmd = new CMD();
@@ -51,7 +51,7 @@ module.exports = function(thing_token,url,filesize,checksum){
     if (_.isNaN(message.actions[0].filesize) || message.actions[0].filesize <= 0) return callback('invalid filesize: ' + cmd.options.filesize);
     if (_.isNaN(message.actions[0].checksum) || message.actions[0].checksum <= 0) return callback('invalid checksum: ' + cmd.options.checksum);
 
-    cmd.options.thing_token = thing_token;
+    cmd.options.thing_token = cmd.bestThingToken(thingToken);
     cmd.options.body = JSON.stringify(message);
 
     function echoMailbox(error){
