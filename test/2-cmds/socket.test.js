@@ -83,8 +83,8 @@ describe('Command: socket',function() {
 
     mockSocket.eventCallbacks['*']({type: 2,nsp: '/',data:['key','value']});
     test.loggerCheckEntries([[
-      ' event   key   \n',
-      ' data    value \n'
+      ' event      key   \n',
+      ' response   value \n'
     ].join('')]);
 
     mockSocket.eventCallbacks['*']({type: 2,nsp: '/',data:[]});

@@ -106,6 +106,7 @@ commander
   .command('mailbox <thing_token> [message]')
   .description('receive the mailbox entry for a thing without a message, send with one')
   .alias('mb')
+  .option('-N --nobody','do not send a body (should clear the mailbox)')
   .action(require('./cmds/mailbox'));
 
 commander

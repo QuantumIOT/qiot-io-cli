@@ -25,7 +25,7 @@ describe('Command: mailbox',function() {
         mockHTTP.statusCode = 401;
         mockHTTP.dataToRead = 'No Authorization header found';
 
-        mailbox('THING',null,function(result){
+        mailbox('THING',null,{},function(result){
           test.safeAssertions(done,function(){
             [result].should.eql(['Unauthorized: No Authorization header found']);
 
@@ -70,7 +70,7 @@ describe('Command: mailbox',function() {
       it('should successfully deliver a mailbox message',function(done){
         mockHTTP.dataToRead = JSON.stringify({action: 'test'});
 
-        mailbox('THING',null,function(result){
+        mailbox('THING',null,{},function(result){
           test.safeAssertions(done,function(){
             [result].should.eql([null]);
 
@@ -95,7 +95,7 @@ describe('Command: mailbox',function() {
         mockHTTP.statusCode = 401;
         mockHTTP.dataToRead = 'No Authorization header found';
 
-        mailbox('THING',JSON.stringify({action: 'test'}),function(result){
+        mailbox('THING',JSON.stringify({action: 'test'}),{},function(result){
           test.safeAssertions(done,function(){
             [result].should.eql(['Unauthorized: No Authorization header found']);
 
@@ -123,7 +123,7 @@ describe('Command: mailbox',function() {
       it('should handle an HTTP error code',function(done){
         mockHTTP.statusCode = 403;
 
-        mailbox('THING',JSON.stringify({action: 'test'}),function(result){
+        mailbox('THING',JSON.stringify({action: 'test'}),{},function(result){
           test.safeAssertions(done,function(){
             [result].should.eql(['Forbidden']);
 
@@ -140,7 +140,7 @@ describe('Command: mailbox',function() {
       it('should successfully deliver a mailbox message',function(done){
         mockHTTP.statusCode = 204;
 
-        mailbox('THING',JSON.stringify({action: 'test'}),function(result){
+        mailbox('THING',JSON.stringify({action: 'test'}),{},function(result){
           test.safeAssertions(done,function(){
             [result].should.eql([null]);
 

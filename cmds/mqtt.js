@@ -55,12 +55,12 @@ module.exports = function(thingToken){
         return client.end(false,callback)
       }
 
-      cmd.logger.debug(JSON.stringify(result));
-      var dataCheck = cmd.helpers.safeParseJSON(result.publish || null);
+      cmd.logger.debug('input',result.publish);
+      var dataCheck = cmd.options.raw || cmd.helpers.safeParseJSON(result.publish || null);
       if (!dataCheck)
         _.defer(command);
       else {
-        client.publish('/1/l/' + thingToken,JSON.stringify({messages: _.concat([],dataCheck)}),{qos: 0,retain: true},function(err) {
+        client.publish('/1/l/' + thingToken,cmd.options.raw ? result.publish : JSON.stringify({messages: _.concat([],dataCheck)}),{qos: 0,retain: true},function(err) {
           if (err)
             cmd.logger.error(err);
           else

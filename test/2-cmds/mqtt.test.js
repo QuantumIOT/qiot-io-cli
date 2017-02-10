@@ -90,19 +90,21 @@ describe('Command: mqtt',function() {
 
     it('should create an mqtt client and put it through its paces',function(done){
 
+      commander.raw = false;
+
       promptStub.onFirstCall().callsArgWith(1,null,{publish: ''});
       promptStub.onSecondCall().callsArgWith(1,null,{publish: '{"action":"test1"}'});
       promptStub.onThirdCall().callsArgWith(1,null,{publish: '{"action":"test2"}'});
       promptStub.onCall(3).callsArgWith(1,'cancel');
 
       mqtt('THING',function(result){
-        [result].should.eql([undefined]);
         test.safeAssertions(done,function(){
+          [result].should.eql([undefined]);
           test.loggerCheckEntries([
-            'DEBUG - {"publish":""}',
-            'DEBUG - {"publish":"{\\"action\\":\\"test1\\"}"}',
+            'DEBUG - input: ',
+            'DEBUG - input: {"action":"test1"}',
             'DEBUG - publish successful',
-            'DEBUG - {"publish":"{\\"action\\":\\"test2\\"}"}',
+            'DEBUG - input: {"action":"test2"}',
             'ERROR - test-error'
           ]);
           done();
@@ -133,6 +135,33 @@ describe('Command: mqtt',function() {
         undefined,
         'mailbox message[MESSAGE]: undefined',
         undefined
+      ]);
+    });
+
+    it('should allow "raw" mode to pass unvalidated JSON messages',function(done){
+
+      promptStub.onFirstCall().callsArgWith(1,null,{publish: '{"action"'});
+      promptStub.onSecondCall().callsArgWith(1,'cancel');
+
+      mqtt('THING',function(result){
+        test.safeAssertions(done,function(){
+          [result].should.eql([undefined]);
+          test.loggerCheckEntries([
+            'DEBUG - input: {"action"',
+            'DEBUG - publish successful'
+          ]);
+          done();
+        });
+      });
+
+      (!!clientStub).should.be.ok;
+      clientStub.options.should.eql({clean: true,clientId: 'THING',host: 'api.qiot.io',keepalive: 60,password: 'ACCOUNT-SECRET',port: 1883,username: 'ACCOUNT-ID'});
+      _.keys(clientStub.eventCallbacks).should.eql(['error','reconnect','close','offline','connect','subscribe:1/m/THING','message']);
+
+      clientStub.eventCallbacks.connect('ack');
+
+      test.loggerCheckEntries([
+        'DEBUG - connected: "ack"'
       ]);
     });
   });

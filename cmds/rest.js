@@ -21,7 +21,7 @@ module.exports = function(method,path,body){
     cmd.safeguard(callback,function() {
       if (result.statusCode !== HOST.allCodes.OK) return callback(HOST.describeResult(result));
 
-      cmd.dumpObject(result.data);
+      cmd.dumpObject(result.data,true);
 
       callback(null);
     });

@@ -26,7 +26,7 @@ module.exports = function(service,event,data){
   socket.on('*', function(args){
     if (!args || !args.type === 2 || !args.nsp === '/' || !_.isArray(args.data) || args.data.length < 2) return cmd.logger.error('unexpected event',args);
 
-    cmd.dumpObject({event: args.data[0],data: args.data[1]})
+    cmd.dumpObject({event: args.data[0],response: args.data[1]},true)
   });
 
   function logEvent(event,logFunction){ socket.on(event,function(data){ logFunction(event,data); }); }
