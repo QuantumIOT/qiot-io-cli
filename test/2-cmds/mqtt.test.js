@@ -114,7 +114,7 @@ describe('Command: mqtt',function() {
       clientStub.publishResponse = [null,'test-error'];
 
       (!!clientStub).should.be.ok;
-      clientStub.options.should.eql({clean: true,clientId: 'THING',host: 'api.qiot.io',keepalive: 60,password: 'ACCOUNT-SECRET',port: 1883,username: 'ACCOUNT-ID'});
+      clientStub.options.should.eql({clean: true,clientId: 'THING',host: 'api.qiot.io',keepalive: 60,password: 'ACCOUNT-SECRET',port: 8883,protocol: 'mqtts',username: 'ACCOUNT-ID'});
       _.keys(clientStub.eventCallbacks).should.eql(['error','reconnect','close','offline','connect','subscribe:1/m/THING','message']);
 
       clientStub.eventCallbacks.error('test-error');
@@ -155,7 +155,7 @@ describe('Command: mqtt',function() {
       });
 
       (!!clientStub).should.be.ok;
-      clientStub.options.should.eql({clean: true,clientId: 'THING',host: 'api.qiot.io',keepalive: 60,password: 'ACCOUNT-SECRET',port: 1883,username: 'ACCOUNT-ID'});
+      clientStub.options.should.eql({clean: true,clientId: 'THING',host: 'api.qiot.io',keepalive: 60,password: 'ACCOUNT-SECRET',port: 8883,protocol: 'mqtts',username: 'ACCOUNT-ID'});
       _.keys(clientStub.eventCallbacks).should.eql(['error','reconnect','close','offline','connect','subscribe:1/m/THING','message']);
 
       clientStub.eventCallbacks.connect('ack');

@@ -138,6 +138,31 @@ Paste this as the `user_token` when prompted in the `qc init` command.
 * Support centralized storage of multiple profiles
 * Support more/all REST actions of the API (e.g., PUT (more), PATCH, DELETE)
 
+### Tips and Tricks
+
+##### servers
+
+If you are running development instances of the `qiot-io` services, you can manually change the `.qc.json` configuration file
+to reference all APIs and socket endpoints (e.g., MQTT and socket.io) on localhost.
+To do this you need to make the following changes:
+
+```json
+{
+  "host_service": "http",
+  "host_dns":     "localhost",
+  "host_port":    3000,
+  "proxy_dns":    "localhost",
+  "mqtt_protocol":"mqtt",
+  "mqtt_port":    1883
+}
+```
+
+##### mqtt
+
+The `qc mqtt` command will accept a JSON message payload when prompted and will 1) verify that the JSON is valid and 2) put add it as the contents of `{"messages":[ ... ]}` to construct a properly complete message to the server.
+However, sometimes you might want to test _invalid JSON_ so simply use the `--raw` option when executing the command,
+but keep in mind that you will then be required to include the _full_ message payload if needed.
+
 ### How to contribute?
 
 You are welcome to help add/extend this tool.

@@ -17,6 +17,7 @@ module.exports = function(thingToken){
   if (credentials.length != 2) return callback('invalid account token');
   
   var client = mqtt.connect({
+    protocol:   cmd.config.settings.mqtt_protocol,
     host:       cmd.config.settings.proxy_dns,
     port:       cmd.config.settings.mqtt_port,
     clientId:   thingToken,
