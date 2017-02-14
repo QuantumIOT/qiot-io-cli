@@ -8,9 +8,10 @@ module.exports = function(thingToken,options){
 
   if (thingToken && options.socket) return require('./socket')('messages','thingToListen',thingToken);
 
-  if (thingToken)   cmd.options.thing_token = thingToken;
-  if (options.from) cmd.options.time_from   = options.from;
-  if (options.to)   cmd.options.time_to     = options.to;
+  if (thingToken)     cmd.options.thing_token = thingToken;
+  if (options.filter) cmd.options.filter      = options.filter.split(',');
+  if (options.from)   cmd.options.time_from   = options.from;
+  if (options.to)     cmd.options.time_to     = options.to;
 
   return API.executeDefn(arguments,API.findDefn({command: 'messages'}));
 };

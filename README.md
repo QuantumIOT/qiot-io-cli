@@ -78,10 +78,11 @@ A few commands have command-specific options such as the following:
 
   Options:
 
-    -h, --help         output usage information
-    --socket           message socket only available when a thing_token is given
-    --from <datetime>  return messages after the given datetime
-    --to <datetime>    return messages before the given datetime
+    -h, --help                 output usage information
+    -f --filter <field-names>  a comma-separated list of field labels to display    
+    --socket                   message socket only available when a thing_token is given
+    --from <datetime>          return messages after the given datetime
+    --to <datetime>            return messages before the given datetime
 ```
 
 ##### things

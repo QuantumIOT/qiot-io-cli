@@ -79,6 +79,7 @@ commander
   .command('messages [thing_token]')
   .description('list most recent messages')
   .alias('ms')
+  .option('-f --filter <field-names>','a comma-separated list of field labels to display')
   .option('--socket','message socket only available when a thing_token is given')
   .option('--from <datetime>','return messages after the given datetime')
   .option('--to <datetime>','return messages before the given datetime')

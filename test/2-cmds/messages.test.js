@@ -106,6 +106,36 @@ describe('Command: messages',function() {
     });
   });
 
+  it('should print only the fields in any messages matching a filter',function(done){
+    var testMessage = {accountToken: 'ACCOUNT-TOKEN',thingToken: 'THING-TOKEN',id: 'ID',message: {time: 'TIME',test: 1}};
+    mockHTTP.dataToRead = JSON.stringify({status: 'success',messages: [testMessage],binaryMessages: [testMessage]});
+
+    messages(null,{filter: 'message.time,message.test'},function(result){
+      test.safeAssertions(done,function(){
+
+        [result].should.eql([null]);
+
+        test.loggerCheckEntries([
+          'DEBUG - host (qiot.io) GET /messages : null',
+          'DEBUG - host output: {"status":"success","messages":[{"accountToken":"ACCOUNT-TOKEN","thingToken":"THING-TOKEN","id":"ID","message":{"time":"TIME","test":1}}],"binaryMessages":[{"accountToken":"ACCOUNT-TOKEN","thingToken":"THING-TOKEN","id":"ID","message":{"time":"TIME","test":1}}]}',
+          'DEBUG - host status: OK',
+          [
+            ' message.time   message.test \n',
+            '────────────── ──────────────\n',
+            ' TIME           1            \n'
+          ].join(''),
+          [
+            ' message.time   message.test \n',
+            '────────────── ──────────────\n',
+            ' TIME           1            \n'
+          ].join('')
+        ]);
+
+        done();
+      });
+    });
+  });
+
   it('should invoke a socket if the option is set and thing_token given',function(done){
     var socket = function(service,event,data) {
       [service,event,data].should.eql(['messages','thingToListen','THING']);
