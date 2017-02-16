@@ -235,8 +235,9 @@ describe('CMD',function() {
       ].join('')])
     });
 
-    it('should create JSON output',function(){
+    it('should create "pretty" JSON output',function(){
       commander.json = true;
+      commander.raw = false;
 
       var cmd = new CMD();
 
@@ -244,6 +245,19 @@ describe('CMD',function() {
 
       test.loggerCheckEntries([
         JSON.stringify(objects,null,2)
+      ])
+    });
+
+    it('should create "raw" JSON output',function(){
+      commander.json = true;
+      commander.raw = true;
+
+      var cmd = new CMD();
+
+      cmd.dumpTable([],objects);
+
+      test.loggerCheckEntries([
+        JSON.stringify(objects)
       ])
     });
 

@@ -19,7 +19,7 @@ describe('Command: fota',function() {
 
   var thing_token = 'THING';
   var url = 'http://domain/folder/test.bin';
-  var messageJSON = JSON.stringify({actions: [{version: 'test',filesize: 123,checksum: 123,url: url}]});
+  var messageJSON = JSON.stringify({actions: [{type: 'fota',target: 'mcu',version: 'test',filesize: 123,checksum: 123,url: url}]});
 
   describe('when an invalid url is given',function(){
     it('should record an error',function(done){
@@ -164,6 +164,8 @@ describe('Command: fota',function() {
             'DEBUG - host output: ' + messageJSON,
             'DEBUG - host status: OK',
             [
+              ' actions.0.type       fota                          \n',
+              ' actions.0.target     mcu                           \n',
               ' actions.0.version    test                          \n',
               ' actions.0.filesize   123                           \n',
               ' actions.0.checksum   123                           \n',

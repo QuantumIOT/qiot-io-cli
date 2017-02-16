@@ -46,7 +46,7 @@ module.exports = function(thingToken,url,filesize,checksum){
   }
 
   downloadNumber('filesize',prefix + '.filesize').then(function(){ return downloadNumber('checksum',prefix + '.checksum'); }).then(function(){
-    var message = {actions: [{version: version,filesize: +cmd.options.filesize,checksum: +cmd.options.checksum,url: url}]};
+    var message = {actions: [{type: 'fota',target: 'mcu',version: version,filesize: +cmd.options.filesize,checksum: +cmd.options.checksum,url: url}]};
 
     if (_.isNaN(message.actions[0].filesize) || message.actions[0].filesize <= 0) return callback('invalid filesize: ' + cmd.options.filesize);
     if (_.isNaN(message.actions[0].checksum) || message.actions[0].checksum <= 0) return callback('invalid checksum: ' + cmd.options.checksum);
