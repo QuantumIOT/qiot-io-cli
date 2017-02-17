@@ -25,7 +25,7 @@ The `qiot-io-cli` allows an authorized user to access the APIs for any instance 
     register|r [options] <identity>      register a thing with an identity in the form of [<type>:]<value>[,[<type>:]<value>...]
     log|l <thing_token> <message>        log a message for a thing
     mailbox|mb <thing_token> [message]   receive the mailbox entry for a thing without a message, send with one
-    fota <thing_token> <url>             send an appropriately formatted FOTA mailbox message to the thing (experimental)
+    fota <thing_token> <type> <url>      send an appropriately formatted FOTA mailbox message to the thing (experimental)
     socket|io <service> <event> <data>   connect using socket.io to a service
     mqtt|mq <thing_token>                connect using an MQTT client for a thing
 

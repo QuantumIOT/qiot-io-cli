@@ -23,7 +23,7 @@ describe('Command: fota',function() {
 
   describe('when an invalid url is given',function(){
     it('should record an error',function(done){
-      fota(thing_token,'abc',function(result){
+      fota(thing_token,'mcu','abc',function(result){
         test.safeAssertions(done,function(){
           [result].should.eql(['invalid url: abc']);
 
@@ -39,7 +39,7 @@ describe('Command: fota',function() {
     it('should record an error',function(done){
       mockHTTP.statusCode = 404;
 
-      fota(thing_token,url,function(result){
+      fota(thing_token,'mcu',url,function(result){
         test.safeAssertions(done,function(){
           [result].should.eql(['Not Found']);
 
@@ -62,7 +62,7 @@ describe('Command: fota',function() {
         };
       };
 
-      fota(thing_token,url,function(result){
+      fota(thing_token,'mcu',url,function(result){
         test.safeAssertions(done,function(){
           [result].should.eql(['invalid filesize: abc']);
 
@@ -88,7 +88,7 @@ describe('Command: fota',function() {
         };
       };
 
-      fota(thing_token,url,function(result){
+      fota(thing_token,'mcu',url,function(result){
         test.safeAssertions(done,function(){
           [result].should.eql(['invalid checksum: abc']);
 
@@ -121,7 +121,7 @@ describe('Command: fota',function() {
       mockHTTPS.statusCode = 401;
       mockHTTPS.dataToRead = 'No Authorization header found';
 
-      fota(thing_token,url,function(result){
+      fota(thing_token,'mcu',url,function(result){
         test.safeAssertions(done,function(){
           [result].should.eql(['Unauthorized: No Authorization header found']);
 
@@ -149,7 +149,7 @@ describe('Command: fota',function() {
         };
       };
 
-      fota(thing_token,url,function(result){
+      fota(thing_token,'mcu',url,function(result){
         test.safeAssertions(done,function(){
           [result].should.eql([null]);
 
