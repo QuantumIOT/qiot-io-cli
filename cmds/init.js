@@ -25,7 +25,9 @@ module.exports = function(options){
     {name: 'host_dns',          description: 'host DNS',          default: basis.host_dns},
     {name: 'proxy_dns',         description: 'thing proxy DNS',   default: basis.proxy_dns},
     {name: 'account_token',     description: 'account token',     default: basis.account_token},
-    {name: 'user_token',        description: 'user token',        default: abbreviation}
+    {name: 'user_token',        description: 'user token',        default: abbreviation},
+    {name: 'fota_url_prefix',   description: 'fota url prefix',   default: basis.fota_url_prefix},
+    {name: 'fota_url_suffix',   description: 'fota url suffix',   default: basis.fota_url_suffix}
   ];
 
   cmd.prompt.get(args,updateConfig);
@@ -34,7 +36,7 @@ module.exports = function(options){
     cmd.safeguard(callback,function() {
       if (error) return callback(error);
 
-      if (abbreviation && result.user_token == abbreviation) delete result.user_token;
+      if (abbreviation && result.user_token === abbreviation) delete result.user_token;
 
       _.each(result,function(value,key){ if (!value) result[key] = undefined; });
 

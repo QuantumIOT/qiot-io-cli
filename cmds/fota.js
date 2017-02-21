@@ -4,20 +4,27 @@ var API = require('../lib/api');
 var CMD = require('../lib/cmd');
 var HOST = require('../lib/host');
 
-module.exports = function(thingToken,type,url){
+module.exports = function(thingToken,type,version,options){
   var originalArguments = arguments;
 
   var cmd = new CMD();
 
   var callback = cmd.ensureGoodCallback(arguments);
-  
-  var matches = url.match(/^(http|https):\/\/([^\/]+)(\/.*\/([^\/]+))\.bin$/i);
-  if (!matches) return callback('invalid url: ' + url);
+
+  if (!options.url) {
+    if (!cmd.config.settings.fota_url_prefix) return callback('missing fota url prefix');
+
+    options.url = cmd.config.settings.fota_url_prefix + version + cmd.config.settings.fota_url_suffix;
+
+    cmd.logger.debug('url',options.url);
+  }
+
+  var matches = options.url.match(/^(http|https):\/\/([^\/]+)(\/.*\/([^\/]+))\.bin$/i);
+  if (!matches) return callback('invalid url: ' + options.url);
 
   var protocol = matches[1];
   var host = matches[2];
   var prefix = matches[3];
-  var version = matches[4];
 
   var service = require(protocol);
 
@@ -31,7 +38,7 @@ module.exports = function(thingToken,type,url){
           response
             .on('data',function(buffer){data += buffer.toString()})
             .on('end',function(){
-              if (response.statusCode != HOST.allCodes.OK)
+              if (response.statusCode !== HOST.allCodes.OK)
                 reject(HOST.allCodes.getStatusText(response.statusCode));
               else {
                 cmd.logger.debug(key,data);
@@ -46,7 +53,7 @@ module.exports = function(thingToken,type,url){
   }
 
   downloadNumber('filesize',prefix + '.filesize').then(function(){ return downloadNumber('checksum',prefix + '.checksum'); }).then(function(){
-    var message = {actions: [{type: 'fota',target: type,version: version,filesize: +cmd.options.filesize,checksum: +cmd.options.checksum,url: url}]};
+    var message = {actions: [{type: 'fota',target: type,version: version,filesize: +cmd.options.filesize,checksum: +cmd.options.checksum,url: options.url}]};
 
     if (_.isNaN(message.actions[0].filesize) || message.actions[0].filesize <= 0) return callback('invalid filesize: ' + cmd.options.filesize);
     if (_.isNaN(message.actions[0].checksum) || message.actions[0].checksum <= 0) return callback('invalid checksum: ' + cmd.options.checksum);

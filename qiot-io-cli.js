@@ -111,8 +111,9 @@ commander
   .action(require('./cmds/mailbox'));
 
 commander
-  .command('fota <thing_token> <target> <url>')
+  .command('fota <thing_token> <target> <version>')
   .description('send an appropriately formatted FOTA mailbox message to the thing (experimental)')
+  .option('--url <url>','provide a url otherwise it is made using config prefix/suffix')
   .action(require('./cmds/fota'));
 
 commander

@@ -19,11 +19,11 @@ describe('Command: fota',function() {
 
   var thing_token = 'THING';
   var url = 'http://domain/folder/test.bin';
-  var messageJSON = JSON.stringify({actions: [{type: 'fota',target: 'mcu',version: 'test',filesize: 123,checksum: 123,url: url}]});
+  var messageJSON = JSON.stringify({actions: [{type: 'fota',target: 'mcu',version: 'abc',filesize: 123,checksum: 123,url: url}]});
 
   describe('when an invalid url is given',function(){
     it('should record an error',function(done){
-      fota(thing_token,'mcu','abc',function(result){
+      fota(thing_token,'mcu','abc',{url: 'abc'},function(result){
         test.safeAssertions(done,function(){
           [result].should.eql(['invalid url: abc']);
 
@@ -35,11 +35,45 @@ describe('Command: fota',function() {
     });
   });
 
+  describe('when no url is given',function(){
+    it('should record an error when no config prefix is set',function(done){
+      fota(thing_token,'mcu','abc',{},function(result){
+        test.safeAssertions(done,function(){
+          [result].should.eql(['missing fota url prefix']);
+
+          test.loggerCheckEntries();
+
+          done();
+        });
+      });
+    });
+
+    it('should construct a url using the given version and config prefix/suffix',function(done){
+      mockHTTP.statusCode = 404; // NOTE - use "not found" to stop after checking for correct URL
+      config.settings.fota_url_prefix = 'http://domain/folder/';
+
+      fota(thing_token,'mcu','test',{},function(result){
+        test.safeAssertions(done,function(){
+          delete config.settings.fota_url_prefix;
+
+          [result].should.eql(['Not Found']);
+
+          test.loggerCheckEntries([
+            'DEBUG - url: http://domain/folder/test.bin',
+            'DEBUG - filesize: /folder/test.filesize'
+          ]);
+
+          done();
+        });
+      });
+    });
+  });
+
   describe('when an bin-related files are not found',function(){
     it('should record an error',function(done){
       mockHTTP.statusCode = 404;
 
-      fota(thing_token,'mcu',url,function(result){
+      fota(thing_token,'mcu','abc',{url: url},function(result){
         test.safeAssertions(done,function(){
           [result].should.eql(['Not Found']);
 
@@ -62,7 +96,7 @@ describe('Command: fota',function() {
         };
       };
 
-      fota(thing_token,'mcu',url,function(result){
+      fota(thing_token,'mcu','abc',{url: url},function(result){
         test.safeAssertions(done,function(){
           [result].should.eql(['invalid filesize: abc']);
 
@@ -88,7 +122,7 @@ describe('Command: fota',function() {
         };
       };
 
-      fota(thing_token,'mcu',url,function(result){
+      fota(thing_token,'mcu','abc',{url: url},function(result){
         test.safeAssertions(done,function(){
           [result].should.eql(['invalid checksum: abc']);
 
@@ -121,7 +155,7 @@ describe('Command: fota',function() {
       mockHTTPS.statusCode = 401;
       mockHTTPS.dataToRead = 'No Authorization header found';
 
-      fota(thing_token,'mcu',url,function(result){
+      fota(thing_token,'mcu','abc',{url: url},function(result){
         test.safeAssertions(done,function(){
           [result].should.eql(['Unauthorized: No Authorization header found']);
 
@@ -149,7 +183,7 @@ describe('Command: fota',function() {
         };
       };
 
-      fota(thing_token,'mcu',url,function(result){
+      fota(thing_token,'mcu','abc',{url: url},function(result){
         test.safeAssertions(done,function(){
           [result].should.eql([null]);
 
@@ -166,7 +200,7 @@ describe('Command: fota',function() {
             [
               ' actions.0.type       fota                          \n',
               ' actions.0.target     mcu                           \n',
-              ' actions.0.version    test                          \n',
+              ' actions.0.version    abc                           \n',
               ' actions.0.filesize   123                           \n',
               ' actions.0.checksum   123                           \n',
               ' actions.0.url        http://domain/folder/test.bin \n'

@@ -126,6 +126,8 @@ describe('Command: init',function() {
       config.settings.current_account = '789';
       config.settings.current_collection = '012';
       config.settings.current_user = '345';
+      config.settings.fota_url_prefix = 'prefix';
+      config.settings.fota_url_suffix = 'suffix';
       test.mockHelpers.filesToRead[config.config_file] = config.settings;
     });
 
@@ -174,6 +176,16 @@ describe('Command: init',function() {
           default: config.defaults.user_token,
           description: 'user token',
           name: 'user_token'
+        },
+        {
+          default: config.defaults.fota_url_prefix,
+          description: 'fota url prefix',
+          name: 'fota_url_prefix'
+        },
+        {
+          default: config.defaults.fota_url_suffix,
+          description: 'fota url suffix',
+          name: 'fota_url_suffix'
         }
       ]);
 
@@ -211,6 +223,16 @@ describe('Command: init',function() {
           default: '456...456',
           description: 'user token',
           name: 'user_token'
+        },
+        {
+          default: config.settings.fota_url_prefix,
+          description: 'fota url prefix',
+          name: 'fota_url_prefix'
+        },
+        {
+          default: config.settings.fota_url_suffix,
+          description: 'fota url suffix',
+          name: 'fota_url_suffix'
         }
       ]);
 

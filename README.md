@@ -97,6 +97,18 @@ A few commands have command-specific options such as the following:
     --socket  thing socket only available when an account is given
 ```
 
+##### fota
+```
+  Usage: fota [options] <thing_token> <target> <version>
+
+  send an appropriately formatted FOTA mailbox message to the thing (experimental)
+
+  Options:
+
+    -h, --help   output usage information
+    --url <url>  provide a url otherwise it is made using config prefix/suffix
+```
+
 ### Getting Started
 
 ##### Install
