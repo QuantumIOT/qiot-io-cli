@@ -76,7 +76,18 @@ test.loggerCheckEntries = function(expected){
   while (logEntriesSeen < calls.length)
     actuals.push(calls[logEntriesSeen++].args[0]);
 
-  actuals.should.eql(expected || []);
+  if (!expected) expected = [];
+
+  if (expected.length != actuals.length)
+    actuals.should.eql(expected || []);
+  else
+    _.each(actuals,function(value,index){
+      var expectValue = expected[index];
+      if (_.isRegExp(expectValue))
+        value.should.match(expectValue);
+      else
+        value.should.eql(expectValue);
+    });
 };
 
 test.loggerResetEntries = function(){
