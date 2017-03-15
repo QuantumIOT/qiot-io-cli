@@ -85,6 +85,8 @@ test.loggerCheckEntries = function(expected){
       var expectValue = expected[index];
       if (_.isRegExp(expectValue))
         value.should.match(expectValue);
+      else if (_.isUndefined(value))
+        test.expect(value).to.eql(expectValue);
       else
         value.should.eql(expectValue);
     });
