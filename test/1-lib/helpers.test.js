@@ -32,7 +32,7 @@ describe('helpers',function(){
 
     it('should return the error value if the file is invalid',function(){
       helpers.readJSON(process.cwd() + '/test/data/invalid.json',{result: 'default'},{result: 'error'}).should.eql({result: 'error'});
-      test.loggerCheckEntries(['ERROR - SyntaxError: Unexpected end of input']);
+      test.loggerCheckEntries([/ERROR - SyntaxError: Unexpected end of (|JSON )input/]);
     });
   });
 
@@ -48,7 +48,7 @@ describe('helpers',function(){
 
     it('should log an error if saving fails',function(){
       helpers.saveJSON(null,{success: true});
-      test.loggerCheckEntries(['ERROR - save JSON error: TypeError: path must be a string']);
+      test.loggerCheckEntries([/ERROR - save JSON error: TypeError: path must be a string(| or Buffer)/]);
     })
   });
 
@@ -59,7 +59,7 @@ describe('helpers',function(){
 
     it('should return null for invalid json',function(){
       (helpers.safeParseJSON('{') === null).should.be.ok;
-      test.loggerCheckEntries(['ERROR - json error: SyntaxError: Unexpected end of input']);
+      test.loggerCheckEntries([/ERROR - json error: SyntaxError: Unexpected end of (|JSON )input/]);
     });
   });
 

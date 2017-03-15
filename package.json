@@ -1,6 +1,6 @@
 {
   "name": "qiot-io-cli",
-  "version": "0.0.19",
+  "version": "0.0.20",
   "description": "command line interface tool for qiot.io",
   "main": "qiot-io-cli.js",
   "bin": {
@@ -44,7 +44,6 @@
     "http-status-codes": "^1.0.6",
     "jwt-decode": "^2.1.0",
     "lodash": "^4.17.4",
-    "mqtt": "^2.4.0",
     "prompt": "^1.0.0",
     "regex-email": "^1.0.2",
     "socket.io": "^1.7.2",
