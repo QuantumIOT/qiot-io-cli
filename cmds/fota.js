@@ -4,62 +4,81 @@ var API = require('../lib/api');
 var CMD = require('../lib/cmd');
 var HOST = require('../lib/host');
 
-module.exports = function(thingToken,type,version,options){
+module.exports = function(thingToken,specs){
   var originalArguments = arguments;
 
   var cmd = new CMD();
 
   var callback = cmd.ensureGoodCallback(arguments);
 
-  if (!options.url) {
-    if (!cmd.config.settings.fota_url_prefix) return callback('missing fota url prefix');
+  var errors = [];
+  var actions = [];
 
-    options.url = cmd.config.settings.fota_url_prefix + version + cmd.config.settings.fota_url_suffix;
+  _.each(specs,function(spec){
+    var parts = spec.split(',');
+    var action = {type: 'fota',target: parts[0],version: parts[1],url: parts[2],pieces: {}};
 
-    cmd.logger.debug('url',options.url);
-  }
+    if (!action.url) {
+      if (!cmd.config.settings.fota_url_prefix) return errors.push('missing fota url prefix');
 
-  var matches = options.url.match(/^(http|https):\/\/([^\/]+)(\/.*\/([^\/]+))\.bin$/i);
-  if (!matches) return callback('invalid url: ' + options.url);
+      action.url = cmd.config.settings.fota_url_prefix + action.version + cmd.config.settings.fota_url_suffix;
 
-  var protocol = matches[1];
-  var host = matches[2];
-  var prefix = matches[3];
+      cmd.logger.debug('constructed url',action.url);
+    }
 
-  var service = require(protocol);
+    var matches = action.url.match(/^(http|https):\/\/([^\/]+)(\/.*\/([^\/]+))\.bin$/i);
+    if (!matches) return errors.push('invalid url: ' + action.url);
 
-  function downloadNumber(key,path){
+    action.pieces.service = require(matches[1]);
+    action.pieces.host = matches[2];
+    action.pieces.prefix = matches[3];
+
+    actions.push(action);
+  });
+
+  if (errors.length > 0) return callback(errors.join('; '));
+
+  function finishAction(action){
+    var service = action.pieces.service;
+    var host    = action.pieces.host;
+    var prefix  = action.pieces.prefix;
+
+    delete action.pieces;
+
+    function downloadNumber(key,path){
+      return new Promise(function(resolve,reject){
+        cmd.logger.debug(key,path);
+
+        service
+          .request({host: host, path: path},function(response){
+            var data = '';
+            response
+              .on('data',function(buffer){data += buffer.toString()})
+              .on('end',function(){
+                if (response.statusCode !== HOST.allCodes.OK)
+                  reject(HOST.allCodes.getStatusText(response.statusCode));
+                else if (isNaN(data))
+                  reject(key + ' is not a number');
+                else {
+                  cmd.logger.debug(key,data);
+
+                  resolve(action[key] = +data);
+                }
+              });
+          })
+          .on('error',reject)
+          .end();
+      });
+    }
+
     return new Promise(function(resolve,reject){
-      cmd.logger.debug(key,path);
-
-      service
-        .request({host: host, path: path},function(response){
-          var data = '';
-          response
-            .on('data',function(buffer){data += buffer.toString()})
-            .on('end',function(){
-              if (response.statusCode !== HOST.allCodes.OK)
-                reject(HOST.allCodes.getStatusText(response.statusCode));
-              else {
-                cmd.logger.debug(key,data);
-
-                resolve(cmd.options[key] = data);
-              }
-            });
-        })
-        .on('error',reject)
-        .end();
+      Promise.all([ downloadNumber('filesize',prefix + '.filesize'),downloadNumber('checksum',prefix + '.checksum') ]).then(resolve).catch(reject);
     });
   }
 
-  downloadNumber('filesize',prefix + '.filesize').then(function(){ return downloadNumber('checksum',prefix + '.checksum'); }).then(function(){
-    var message = {actions: [{type: 'fota',target: type,version: version,filesize: +cmd.options.filesize,checksum: +cmd.options.checksum,url: options.url}]};
-
-    if (_.isNaN(message.actions[0].filesize) || message.actions[0].filesize <= 0) return callback('invalid filesize: ' + cmd.options.filesize);
-    if (_.isNaN(message.actions[0].checksum) || message.actions[0].checksum <= 0) return callback('invalid checksum: ' + cmd.options.checksum);
-
+  Promise.all(actions.map(function(action){ return finishAction(action); })).catch(callback).then(function(){
     cmd.options.thing_token = cmd.bestThingToken(thingToken);
-    cmd.options.body = JSON.stringify(message);
+    cmd.options.body = JSON.stringify({actions: actions});
 
     function echoMailbox(error){
       if (error) return callback(error);
@@ -69,5 +88,6 @@ module.exports = function(thingToken,type,version,options){
     }
 
     API.executeDefn([echoMailbox],API.findDefn({command: 'mailbox',required_options: ['thing_token'],body: true}));
-  }).catch(callback);
+  });
+
 };
