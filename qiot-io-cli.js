@@ -111,10 +111,14 @@ commander
   .action(require('./cmds/mailbox'));
 
 commander
-  .command('fota <thing_token> <target> <version>')
-  .description('send an appropriately formatted FOTA mailbox message to the thing (experimental)')
-  .option('--url <url>','provide a url otherwise it is made using config prefix/suffix')
+  .command('fota <thing_token> <specs...>')
+  .description('send mailbox FOTA specs (<target>,<version>[,<url>]) to the thing (experimental)')
   .action(require('./cmds/fota'));
+
+commander
+  .command('cota <thing_token> <settings...>')
+  .description('send mailbox <key>=<value> settings to the thing (experimental)')
+  .action(require('./cmds/cota'));
 
 commander
   .command('socket <service> <event> <data>')
