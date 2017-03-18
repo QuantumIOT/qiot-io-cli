@@ -14,7 +14,7 @@ module.exports = function(thingToken){
   if (!cmd.config.settings.account_token) return callback('no account token found');
 
   var credentials = new Buffer(cmd.config.settings.account_token,'base64').toString().split(':');
-  if (credentials.length != 2) return callback('invalid account token');
+  if (credentials.length !== 2) return callback('invalid account token');
   
   var client = mqtt.connect({
     protocol:   cmd.config.settings.mqtt_protocol,
@@ -45,6 +45,11 @@ module.exports = function(thingToken){
     cmd.logger.consoleLOG();
   });
 
+  client.subscribe('1/l/' + thingToken,{qos: 0},function(err,granted){
+    cmd.logger.message('subscribe: ' + JSON.stringify(err) + ':' + JSON.stringify(granted));
+    cmd.logger.consoleLOG();
+  });
+
   client.on('message',function(topic,json){
     cmd.logger.message('mailbox message[' + topic + ']: ' + json);
     cmd.logger.consoleLOG();
@@ -57,11 +62,29 @@ module.exports = function(thingToken){
       }
 
       cmd.logger.debug('input',result.publish);
-      var dataCheck = cmd.options.raw || cmd.helpers.safeParseJSON(result.publish || null);
+
+      var noWrapper = true;
+      var topic = result.publish[0];
+      switch(result.publish[0])
+      {
+      case 'l':
+        noWrapper = false;
+        break;
+      case 'm':
+        break;
+      default:
+        cmd.logger.message('you must begin a message with `l` for log and `m` for mailbox');
+        return _.defer(command);
+      }
+
+      var raw = result.publish.substring(1);
+      var dataCheck = cmd.options.raw || !raw || cmd.helpers.safeParseJSON(raw);
       if (!dataCheck)
         _.defer(command);
       else {
-        client.publish('/1/l/' + thingToken,cmd.options.raw ? result.publish : JSON.stringify({messages: _.concat([],dataCheck)}),{qos: 0,retain: true},function(err) {
+        var message = cmd.options.raw || noWrapper ? raw : JSON.stringify({messages: _.concat([],dataCheck)});
+        cmd.logger.debug('message: ',message);
+        client.publish('1/' + topic + '/' + thingToken,message,{qos: 0,retain: true},function(err) {
           if (err)
             cmd.logger.error(err);
           else
