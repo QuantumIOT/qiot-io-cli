@@ -36,7 +36,6 @@ describe('Command: things',function() {
       ].join('')
     ]);
 
-    _.keys(mockHTTP.eventCallbacks).should.eql(['request','error','data','end']);
     mockHTTP.dataWritten.should.eql([
       'request={"method":"GET","host":"qiot.io","port":443,"path":"' + path + '","headers":{"Content-Type":"application/json"}}',
       'end'

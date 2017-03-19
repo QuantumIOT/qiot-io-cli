@@ -93,8 +93,8 @@ describe('Command: mqtt',function() {
       commander.raw = false;
 
       promptStub.onFirstCall().callsArgWith(1,null,{publish: ''});
-      promptStub.onSecondCall().callsArgWith(1,null,{publish: '{"action":"test1"}'});
-      promptStub.onThirdCall().callsArgWith(1,null,{publish: '{"action":"test2"}'});
+      promptStub.onSecondCall().callsArgWith(1,null,{publish: 'l{"action":"test1"}'});
+      promptStub.onThirdCall().callsArgWith(1,null,{publish: 'm{"action":"test2"}'});
       promptStub.onCall(3).callsArgWith(1,'cancel');
 
       mqtt('THING',function(result){
@@ -102,9 +102,12 @@ describe('Command: mqtt',function() {
           [result].should.eql([undefined]);
           test.loggerCheckEntries([
             'DEBUG - input: ',
-            'DEBUG - input: {"action":"test1"}',
+            'you must begin a message with `l` for log and `m` for mailbox',
+            'DEBUG - input: l{"action":"test1"}',
+            'DEBUG - message: : {"messages":[{"action":"test1"}]}',
             'DEBUG - publish successful',
-            'DEBUG - input: {"action":"test2"}',
+            'DEBUG - input: m{"action":"test2"}',
+            'DEBUG - message: : {"action":"test2"}',
             'ERROR - test-error'
           ]);
           done();
@@ -115,7 +118,16 @@ describe('Command: mqtt',function() {
 
       (!!clientStub).should.be.ok;
       clientStub.options.should.eql({clean: true,clientId: 'THING',host: 'api.qiot.io',keepalive: 60,password: 'ACCOUNT-SECRET',port: 8883,protocol: 'mqtts',username: 'ACCOUNT-ID'});
-      _.keys(clientStub.eventCallbacks).should.eql(['error','reconnect','close','offline','connect','subscribe:1/m/THING','message']);
+      _.keys(clientStub.eventCallbacks).should.eql([
+        'error',
+        'reconnect',
+        'close',
+        'offline',
+        'connect',
+        'subscribe:1/m/THING',
+        'subscribe:1/l/THING',
+        'message'
+      ]);
 
       clientStub.eventCallbacks.error('test-error');
       clientStub.eventCallbacks.reconnect();
@@ -123,7 +135,8 @@ describe('Command: mqtt',function() {
       clientStub.eventCallbacks.close();
       clientStub.eventCallbacks.connect('ack');
       clientStub.eventCallbacks['subscribe:1/m/THING'](null,true);
-      clientStub.eventCallbacks.message('MESSAGE');
+      clientStub.eventCallbacks['subscribe:1/l/THING'](null,true);
+      clientStub.eventCallbacks.message('subscribe:1/m/THING','{"mailbox":true}');
 
       test.loggerCheckEntries([
         'ERROR - error: test-error',
@@ -133,21 +146,62 @@ describe('Command: mqtt',function() {
         'DEBUG - connected: "ack"',
         'subscribe: null:true',
         undefined,
-        'mailbox message[MESSAGE]: undefined',
+        'subscribe: null:true',
+        undefined,
+        'mailbox message[subscribe:1/m/THING]: {"mailbox":true}',
         undefined
       ]);
     });
 
-    it('should allow "raw" mode to pass unvalidated JSON messages',function(done){
+    it('should check for invalid JSON messages',function(done){
 
-      promptStub.onFirstCall().callsArgWith(1,null,{publish: '{"action"'});
+      commander.raw = false;
+
+      promptStub.onFirstCall().callsArgWith(1,null,{publish: 'l{"action"'});
       promptStub.onSecondCall().callsArgWith(1,'cancel');
 
       mqtt('THING',function(result){
         test.safeAssertions(done,function(){
           [result].should.eql([undefined]);
           test.loggerCheckEntries([
-            'DEBUG - input: {"action"',
+            'DEBUG - input: l{"action"',
+            /ERROR - json error: SyntaxError: Unexpected end of (|JSON )input/
+          ]);
+          done();
+        });
+      });
+
+      (!!clientStub).should.be.ok;
+      clientStub.options.should.eql({clean: true,clientId: 'THING',host: 'api.qiot.io',keepalive: 60,password: 'ACCOUNT-SECRET',port: 8883,protocol: 'mqtts',username: 'ACCOUNT-ID'});
+      _.keys(clientStub.eventCallbacks).should.eql([
+        'error',
+        'reconnect',
+        'close',
+        'offline',
+        'connect',
+        'subscribe:1/m/THING',
+        'subscribe:1/l/THING',
+        'message'
+      ]);
+
+      clientStub.eventCallbacks.connect('ack');
+
+      test.loggerCheckEntries([
+        'DEBUG - connected: "ack"'
+      ]);
+    });
+
+    it('should allow "raw" mode to pass unvalidated JSON messages',function(done){
+
+      promptStub.onFirstCall().callsArgWith(1,null,{publish: 'l{"action"'});
+      promptStub.onSecondCall().callsArgWith(1,'cancel');
+
+      mqtt('THING',function(result){
+        test.safeAssertions(done,function(){
+          [result].should.eql([undefined]);
+          test.loggerCheckEntries([
+            'DEBUG - input: l{"action"',
+            'DEBUG - message: : {"action"',
             'DEBUG - publish successful'
           ]);
           done();
@@ -156,7 +210,16 @@ describe('Command: mqtt',function() {
 
       (!!clientStub).should.be.ok;
       clientStub.options.should.eql({clean: true,clientId: 'THING',host: 'api.qiot.io',keepalive: 60,password: 'ACCOUNT-SECRET',port: 8883,protocol: 'mqtts',username: 'ACCOUNT-ID'});
-      _.keys(clientStub.eventCallbacks).should.eql(['error','reconnect','close','offline','connect','subscribe:1/m/THING','message']);
+      _.keys(clientStub.eventCallbacks).should.eql([
+        'error',
+        'reconnect',
+        'close',
+        'offline',
+        'connect',
+        'subscribe:1/m/THING',
+        'subscribe:1/l/THING',
+        'message'
+      ]);
 
       clientStub.eventCallbacks.connect('ack');
 

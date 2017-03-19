@@ -165,21 +165,33 @@ var MockHTTP = function(){
   var self = this;
 
   self.instanceCount = mockCounter++;
-  self.eventCallbacks = {};
   self.dataWritten = [];
   self.dataToRead = null;
   self.statusCode = 200;
   self.callbackOnEnd = null;
 };
 
-MockHTTP.prototype.on = function(event,callback){
+
+var MockRequest = function(service){
+  var self = this;
+
+  self.service = service;
+  self.statusCode = !_.isArray(service.statusCode) ? service.statusCode : service.statusCode.length > 1 ? service.statusCode.shift() : service.statusCode[0];
+  self.eventCallbacks = {};
+  self.callbackOnEnd = service.callbackOnEnd;
+};
+
+MockRequest.prototype.on = function(event,callback){
   var self = this;
 
   self.eventCallbacks[event] = callback;
   if (event == 'end') {
-    self.callbackOnEnd && self.callbackOnEnd();
+
+    if (self.callbackOnEnd)
+      self.callbackOnEnd();
+
     _.defer(function(){
-      _.each(_.concat([],self.dataToRead || []),self.eventCallbacks.data);
+      _.each(_.concat([],self.service.dataToRead || []),self.eventCallbacks.data);
       self.eventCallbacks.end(null);
     });
   }
@@ -187,18 +199,18 @@ MockHTTP.prototype.on = function(event,callback){
   return self;
 };
 
-MockHTTP.prototype.write = function(data){
+MockRequest.prototype.write = function(data){
   var self = this;
 
-  self.dataWritten.push('write=' + data);
+  self.service.dataWritten.push('write=' + data);
 
   return self;
 };
 
-MockHTTP.prototype.end = function(){
+MockRequest.prototype.end = function(){
   var self = this;
 
-  self.dataWritten.push('end');
+  self.service.dataWritten.push('end');
   _.defer(self.eventCallbacks.request,self);
 
   return self;
@@ -208,9 +220,12 @@ MockHTTP.prototype.request = function(options,callback){
   var self = this;
 
   self.dataWritten.push('request=' + JSON.stringify(options));
-  self.eventCallbacks.request = callback;
 
-  return self;
+  var request = new MockRequest(self);
+
+  request.eventCallbacks.request = callback;
+
+  return request;
 };
 
 test.MockHTTP = MockHTTP;

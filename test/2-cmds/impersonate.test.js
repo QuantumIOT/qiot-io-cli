@@ -49,7 +49,6 @@ describe('Command: impersonate',function() {
       ].join('')
     ]);
 
-    _.keys(mockHTTP.eventCallbacks).should.eql(['request','error','data','end']);
     mockHTTP.dataWritten.should.eql([
       'request={"method":"PUT","host":"qiot.io","port":443,"path":"'+ path + '","headers":{"Content-Type":"application/json","Authorization":"Bearer USER-TOKEN"}}',
       'end'

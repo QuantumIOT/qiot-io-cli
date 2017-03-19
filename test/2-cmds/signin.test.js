@@ -57,7 +57,6 @@ describe('Command: signin',function() {
       ].join('')
     ]);
 
-    _.keys(mockHTTP.eventCallbacks).should.eql(['request','error','data','end']);
     mockHTTP.dataWritten.should.eql([
       'request={"method":"POST","host":"qiot.io","port":443,"path":"/users/signin","headers":{"Content-Type":"application/json","Content-Length":48}}',
       'write={"email":"test@test.com","password":"testing!!"}',

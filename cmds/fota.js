@@ -58,7 +58,7 @@ module.exports = function(thingToken,specs){
                 if (response.statusCode !== HOST.allCodes.OK)
                   reject(HOST.allCodes.getStatusText(response.statusCode));
                 else if (isNaN(data))
-                  reject(key + ' is not a number');
+                  reject('invalid ' + key + ': ' + data);
                 else {
                   cmd.logger.debug(key,data);
 
@@ -76,7 +76,7 @@ module.exports = function(thingToken,specs){
     });
   }
 
-  Promise.all(actions.map(function(action){ return finishAction(action); })).catch(callback).then(function(){
+  Promise.all(actions.map(function(action){ return finishAction(action); })).then(function(){
     cmd.options.thing_token = cmd.bestThingToken(thingToken);
     cmd.options.body = JSON.stringify({actions: actions});
 
@@ -88,6 +88,6 @@ module.exports = function(thingToken,specs){
     }
 
     API.executeDefn([echoMailbox],API.findDefn({command: 'mailbox',required_options: ['thing_token'],body: true}));
-  });
+  }).catch(callback);
 
 };
