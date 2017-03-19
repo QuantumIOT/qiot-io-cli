@@ -12,22 +12,23 @@ The `qiot-io-cli` allows an authorized user to access the APIs for any instance 
 
   Commands:
 
-    init [options]                       initialize general configuration settings
-    signin|si [email] [password]         signin a local user with email and password
-    impersonate|i [userid]               impersonate a userid, or clear impersonation if none provided
-    whoami|?                             dump current user information
-    accounts|a                           list visible accounts
-    collections|c                        list collections for an account
-    things|t [options]                   list things for an account or collection
-    users|u                              list users
-    messages|ms [options] [thing_token]  list most recent messages
-    rest <method> <path> [body]          make a REST api call
-    register|r [options] <identity>      register a thing with an identity in the form of [<type>:]<value>[,[<type>:]<value>...]
-    log|l <thing_token> <message>        log a message for a thing
-    mailbox|mb <thing_token> [message]   receive the mailbox entry for a thing without a message, send with one
-    fota <thing_token> <type> <url>      send an appropriately formatted FOTA mailbox message to the thing (experimental)
-    socket|io <service> <event> <data>   connect using socket.io to a service
-    mqtt|mq <thing_token>                connect using an MQTT client for a thing
+    init [options]                                initialize general configuration settings
+    signin|si [email] [password]                  signin a local user with email and password
+    impersonate|i [userid]                        impersonate a userid, or clear impersonation if none provided
+    whoami|?                                      dump current user information
+    accounts|a                                    list visible accounts
+    collections|c                                 list collections for an account
+    things|t [options]                            list things for an account or collection
+    users|u                                       list users
+    messages|ms [options] [thing_token]           list most recent messages
+    rest <method> <path> [body]                   make a REST api call
+    register|r [options] <identity>               register a thing with an identity in the form of [<type>:]<value>[,[<type>:]<value>...]
+    log|l <thing_token> <message>                 log a message for a thing
+    mailbox|mb [options] <thing_token> [message]  receive the mailbox entry for a thing without a message, send with one
+    fota <thing_token> <specs...>                 send mailbox FOTA specs (<target>,<version>[,<url>]) to the thing (experimental)
+    cota <thing_token> <settings...>              send mailbox <key>=<value> settings to the thing (experimental)
+    socket|io <service> <event> <data>            connect using socket.io to a service
+    mqtt|mq <thing_token>                         connect using an MQTT client for a thing
 
   Options:
 
@@ -46,8 +47,6 @@ The `qiot-io-cli` allows an authorized user to access the APIs for any instance 
     --debug                        turn on debugging for this command
     --timestamps                   add timestamps to logs
     -v --verbose                   display maximal output
-
-
 ```
 
 One special note: Anywhere that a "thing_token" is specified as a command line argument,
@@ -95,18 +94,6 @@ A few commands have command-specific options such as the following:
 
     -h, --help  output usage information
     --socket  thing socket only available when an account is given
-```
-
-##### fota
-```
-  Usage: fota [options] <thing_token> <target> <version>
-
-  send an appropriately formatted FOTA mailbox message to the thing (experimental)
-
-  Options:
-
-    -h, --help   output usage information
-    --url <url>  provide a url otherwise it is made using config prefix/suffix
 ```
 
 ### Getting Started
