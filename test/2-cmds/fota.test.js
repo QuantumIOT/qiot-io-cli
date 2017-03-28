@@ -59,9 +59,9 @@ describe('Command: fota',function() {
           [result].should.eql(['Not Found']);
 
           test.loggerCheckEntries([
-            'DEBUG - constructed url: http://domain/folder/test.bin',
-            'DEBUG - filesize: /folder/test.filesize',
-            'DEBUG - checksum: /folder/test.checksum'
+            'DEBUG - constructed url: http://domain/folder/mcu/test.bin',
+            'DEBUG - filesize: /folder/mcu/test.filesize',
+            'DEBUG - checksum: /folder/mcu/test.checksum'
           ]);
 
           done();

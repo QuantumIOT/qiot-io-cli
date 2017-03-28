@@ -21,7 +21,7 @@ module.exports = function(thingToken,specs){
     if (!action.url) {
       if (!cmd.config.settings.fota_url_prefix) return errors.push('missing fota url prefix');
 
-      action.url = cmd.config.settings.fota_url_prefix + action.version + cmd.config.settings.fota_url_suffix;
+      action.url = cmd.config.settings.fota_url_prefix + action.target + '/' + action.version + cmd.config.settings.fota_url_suffix;
 
       cmd.logger.debug('constructed url',action.url);
     }
